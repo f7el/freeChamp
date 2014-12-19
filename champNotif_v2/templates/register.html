@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block body %}
+<script type=text/javascript src="{{
+  url_for('static', filename='scripts/register.js') }}"></script>
+  <h2>Register</h2>
+  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+  <!--<form action="{{ url_for('processRegister') }}" method=post>-->
+    <dl>
+      <dt>email:
+      <dd><input type="text" name="email" id="email" value="test@gmail.com">
+      <div id="emailBlank" class="error"><font color="red">email cannot be blank</font></div>
+      <div id="emailFormat" class="error"><font color="red">invalid email format</font></div>
+      <dt>Password:
+      <dd><input type="password" name="password" id="password" value="1">
+      <div id="pwBlank" class="error"><font color="red">password cannot be blank</font></div>
+      <dt>Enter password again:
+      <dd><input type="password" name="password2" id="password2" value="1">
+      <div id="pw2Blank" class="error"><font color="red">verify password field cannot be blank</font></div>
+      <div id="pwMismatch" class="error"><font color="red">passwords do not match</font></div>
+      <dd><input type="submit" value="submit" id="submit"><br><br>
+    </dl>
+  <!--</form>-->
+  <a href="{{ url_for('verifyEmailForm') }}">send another verification email</a>
+{% endblock %}
