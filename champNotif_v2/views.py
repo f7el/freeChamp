@@ -1,7 +1,7 @@
 __author__ = 'Paul'
 
 from champNotif_v2 import app
-from flask import session, redirect, url_for, render_template, request
+from flask import session, redirect, url_for, render_template, request, abort
 from Email import *
 emailLib = Email()
 @app.route('/')
@@ -40,31 +40,38 @@ def verifyEmailForm():
 @app.route('/processRegister', methods=['POST'])
 def processRegister():
     if request.method == 'POST':
-
         email = request.form['varEmail']
-        pw = request.form['varPassword']
-        salt = emailLib.genRandomString()
-        isVerified = 0 #false
-        emailLib.addEmail(email, pw, salt, isVerified)
-        canSend = emailLib.checkSendLimit(email)
-        if canSend:
-            return 1
+        if not emailLib.emailExists(email):
+            pw = request.form['varPassword']
+            salt = emailLib.genRandomString()
+            #hash(salt + pw)
+            newPw = emailLib.securePw(salt,pw)
+            isVerified = 0 #false
+            emailLib.addEmail(email, newPw, salt, isVerified)
+            verifyEmail(email)
 
-
-
+        #NEED TO MAKE CUSTOM HANDLER FOR EMAIL ALREADY EXISTS <---------------------------------------------
         else:
-            t = (email, pw, salt, isVerified)
-            #check if the email already exists
-            exists = emailLib.emailExists(email)
-
-            #if the email does not exist, send the verification email
-            #result = query_db('select * from USERS where email=?',t,one=True)
-    return email
+            abort(400)
 
 @app.route('/verifyEmail')
-def verifyEmail():
-    email = request.args.get('email')
-    canSend = emailLib.checkSendLimit(email)
-    if canSend:
-        token =
-        emailLib.sendVerificationEmail(email,token)
+def verifyEmail(self, email=None):
+    if email == None:
+        email = request.args.get('email')
+        canSend = emailLib.checkSendLimit(email)
+        if canSend:
+            token = emailLib.genRandomString()
+            emailLib.addVerification(email,token)
+            emailLib.sendVerificationEmail(email,token)
+            return "email verification sent"
+        else:
+            return False
+    else:
+        canSend = emailLib.checkSendLimit(email)
+        if canSend:
+            token = emailLib.genRandomString()
+            emailLib.addVerification(email,token)
+            emailLib.sendVerificationEmail(email,token)
+            return "email verification sent"
+        else:
+            abort(404)

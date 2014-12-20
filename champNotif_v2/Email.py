@@ -27,7 +27,11 @@ class Email:
 
         #return newId
 
-    def addVerification(self, email):
+    def addVerification(self, email, token):
+        db = get_db()
+        t = (token,email)
+        db.execute('INSERT INTO VERIFICATION SET token=?, timestamp=datetime("now",localtime"),count=0,email=?',t)
+
 
     def emailExists(self, email):
         db = get_db()
@@ -59,6 +63,13 @@ class Email:
         hash = hashlib.sha512()
         hash.update(randomBytes)
         return hash.hexdigest()
+
+    def securePw(self, salt, pw):
+        hash = hashlib.sha512()
+        hash.update(salt + pw)
+        return hash.hexdigest()
+
+
 
     def genNewToken(self,email):
         g.db = get_db()
