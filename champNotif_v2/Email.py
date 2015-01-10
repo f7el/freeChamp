@@ -51,12 +51,9 @@ class Email:
         get_db('SELECT COUNT(email) FROM verification WHERE email=? and ')
 
     def makeEmailActive(self,email):
-        con = sqlite3.connect(database)
+        g.db = get_db()
         t = (email,)
-
-        with con:
-            cur = con.cursor()
-            cur.execute('UPDATE USERS SET isVerified=1 WHERE email=?',t)
+        g.db.execute('UPDATE USERS SET isVerified=1 WHERE email=?',t)
 
     def genRandomString(self):
         randomBytes = os.urandom(32)
@@ -114,38 +111,31 @@ class Email:
 
 
     def verificationFromToday(self, email):
+        g.db = get_db()
         t = (email,)
-        con = sqlite3.connect(database)
-        with con:
-             c = con.cursor()
-             c.execute("SELECT count(strftime('%Y-%m-%d',timestamp,'localtime')) from verification WHERE strftime(" + \
-                       "'%Y-%m-%d',timestamp,'localtime')=strftime('%Y-%m-%d','now','localtime') and email=?", t)
-             result = c.fetchone()
-             count = result[0]
-             return count == 1
+
+
+
+        result = query_db("SELECT count(strftime('%Y-%m-%d',timestamp,'localtime')) from verification WHERE strftime(" + \
+                          "'%Y-%m-%d',timestamp,'localtime')=strftime('%Y-%m-%d','now','localtime') and email=?",t,one=True)
+
+        count = result[0]
+        return count == 1
 
     def resetVerificationCount(self, email):
-        con = sqlite3.connect(database)
+        g.db = get_db()
         t = (email,)
-        with con:
-            c = con.cursor()
-            c.execute('UPDATE verification SET count=0 WHERE email=?',t)
+        g.db.execute('UPDATE verification SET count=0 WHERE email=?',t)
 
     def updateVerificationCount(self, email, count):
-        con = sqlite3.connect(database)
+        g.db = get_db()
         t = (count,email)
-        with con:
-            c = con.cursor()
-            c.execute('UPDATE verification SET count=? WHERE email=?',t)
+        g.db.execute('UPDATE verification SET count=? WHERE email=?',t)
 
     def getCount(self, email):
-        con = sqlite3.connect(database)
         t = (email,)
-        with con:
-            c = con.cursor()
-            c.execute('SELECT count FROM verification WHERE email=?',t)
-            result = c.fetchone()
-            return result[0]
+        result = query_db('SELECT count FROM verification WHERE email=?',t,one=True)
+        return result[0]
 
     #returns true if send limit has not been exceeded for a given email
     def checkSendLimit(self, email):
@@ -165,6 +155,10 @@ class Email:
                     return False
         else:
             return False
+
+    def insertTestUser(self):
+        g.db = get_db()
+        g.db.execute("INSERT INTO USERS VALUES ('vandamere@gmail.com', 'pw', 'salt', '0')")
 
 
 

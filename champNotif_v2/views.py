@@ -1,7 +1,7 @@
 __author__ = 'Paul'
 
 from champNotif_v2 import app
-from flask import session, redirect, url_for, render_template, request, abort
+from flask import session, redirect, url_for, render_template, request, abort,flash
 from Email import *
 emailLib = Email()
 @app.route('/')
@@ -55,23 +55,26 @@ def processRegister():
             abort(400)
 
 @app.route('/verifyEmail')
-def verifyEmail(self, email=None):
+def verifyEmail(email=None):
     if email == None:
         email = request.args.get('email')
+        emailLib.insertTestUser()
         canSend = emailLib.checkSendLimit(email)
-        if canSend:
-            token = emailLib.genRandomString()
-            emailLib.addVerification(email,token)
-            emailLib.sendVerificationEmail(email,token)
-            return "email verification sent"
-        else:
-            return False
-    else:
-        canSend = emailLib.checkSendLimit(email)
-        if canSend:
-            token = emailLib.genRandomString()
-            emailLib.addVerification(email,token)
-            emailLib.sendVerificationEmail(email,token)
-            return "email verification sent"
-        else:
-            abort(404)
+        flash(str(canSend))
+        return render_template('sendVerification.html')
+    #     if canSend:
+    #         token = emailLib.genRandomString()
+    #         emailLib.addVerification(email,token)
+    #         emailLib.sendVerificationEmail(email,token)
+    #         return "email verification sent"
+    #     else:
+    #         return False
+    # else:
+    #     canSend = emailLib.checkSendLimit(email)
+    #     if canSend:
+    #         token = emailLib.genRandomString()
+    #         emailLib.addVerification(email,token)
+    #         emailLib.sendVerificationEmail(email,token)
+    #         return "email verification sent"
+    #     else:
+    #         abort(404)
