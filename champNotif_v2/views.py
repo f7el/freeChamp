@@ -58,12 +58,12 @@ def processRegister():
 def verifyEmail(email=None):
     if email == None:
         email = request.args.get('email')
-        emailLib.insertTestUser()
         canSend = emailLib.checkSendLimit(email)
-        flash(str(canSend))
         return render_template('sendVerification.html')
-    #     if canSend:
-    #         token = emailLib.genRandomString()
+
+
+        if canSend:
+            token = emailLib.genRandomString()
     #         emailLib.addVerification(email,token)
     #         emailLib.sendVerificationEmail(email,token)
     #         return "email verification sent"

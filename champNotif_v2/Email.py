@@ -23,6 +23,7 @@ class Email:
     def addEmail(self, email, password, salt, isVerified):
         t = (email, password, salt, isVerified)
         g.db.execute('INSERT INTO USERS VALUES (?,?,?,?)', t)
+        g.db.commit()
         #newId = cur.lastrowid
 
         #return newId
@@ -31,10 +32,10 @@ class Email:
         db = get_db()
         t = (token,email)
         db.execute('INSERT INTO VERIFICATION SET token=?, timestamp=datetime("now",localtime"),count=0,email=?',t)
+        g.db.commit()
 
 
     def emailExists(self, email):
-        db = get_db()
         t = (email,)
         result = query_db('SELECT COUNT(email) FROM USERS WHERE email=(?)',t,one=True)
         count = result[0]
@@ -43,17 +44,11 @@ class Email:
 
         return False
 
-    def exceededDailyVerificationCount(self,email):
-        db = get_db()
-        t = (email,)
-
-
-        get_db('SELECT COUNT(email) FROM verification WHERE email=? and ')
-
     def makeEmailActive(self,email):
         g.db = get_db()
         t = (email,)
         g.db.execute('UPDATE USERS SET isVerified=1 WHERE email=?',t)
+        g.db.commit()
 
     def genRandomString(self):
         randomBytes = os.urandom(32)
@@ -74,6 +69,7 @@ class Email:
         token = self._getToken(email)
         t = (newToken,token)
         g.db.execute('UPDATE verification SET token=?, timestamp=datetime("now","localtime") WHERE token=?',t)
+        g.db.commit()
         return newToken
 
     #returns tuple where first element is bool and 2nd is email if bool is true
@@ -111,11 +107,7 @@ class Email:
 
 
     def verificationFromToday(self, email):
-        g.db = get_db()
         t = (email,)
-
-
-
         result = query_db("SELECT count(strftime('%Y-%m-%d',timestamp,'localtime')) from verification WHERE strftime(" + \
                           "'%Y-%m-%d',timestamp,'localtime')=strftime('%Y-%m-%d','now','localtime') and email=?",t,one=True)
 
@@ -126,11 +118,13 @@ class Email:
         g.db = get_db()
         t = (email,)
         g.db.execute('UPDATE verification SET count=0 WHERE email=?',t)
+        g.db.commit()
 
     def updateVerificationCount(self, email, count):
         g.db = get_db()
         t = (count,email)
         g.db.execute('UPDATE verification SET count=? WHERE email=?',t)
+        g.db.commit()
 
     def getCount(self, email):
         t = (email,)
@@ -156,9 +150,7 @@ class Email:
         else:
             return False
 
-    def insertTestUser(self):
-        g.db = get_db()
-        g.db.execute("INSERT INTO USERS VALUES ('vandamere@gmail.com', 'pw', 'salt', '0')")
+
 
 
 
