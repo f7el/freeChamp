@@ -39,6 +39,7 @@ class Email:
         t = (email,)
         result = query_db('SELECT COUNT(email) FROM USERS WHERE email=(?)',t,one=True)
         count = result[0]
+        print "count: " + str(count)
         if count > 0:
             return True
 
@@ -72,11 +73,13 @@ class Email:
         g.db.commit()
         return newToken
 
-    #returns tuple where first element is bool and 2nd is email if bool is true
+    #returns a list where first element is 1 or 0 and 2nd is email if 1 is returned
     def tokenIsActive(self,token):
         t = (token,)
         result = query_db('SELECT COUNT(*),email FROM verification WHERE token=? and datetime("now","localtime") < datetime(timestamp,"+2 day")',t)
-        return result
+        print result[0]
+        return result[0]
+
 
 
     def sendVerificationEmail(self, email, token):
@@ -112,6 +115,7 @@ class Email:
                           "'%Y-%m-%d',timestamp,'localtime')=strftime('%Y-%m-%d','now','localtime') and email=?",t,one=True)
 
         count = result[0]
+        print "querying ver from today. result: " + str(count)
         return count == 1
 
     def resetVerificationCount(self, email):
@@ -131,11 +135,24 @@ class Email:
         result = query_db('SELECT count FROM verification WHERE email=?',t,one=True)
         return result[0]
 
+    def tokenIsAlive(self,token):
+        t = (token,)
+        result = query_db('SELECT timestamp FROM VERIFICATION WHERE token=?',t,one=True)
+        timeStamp = result[0]
+        t = (timeStamp,)
+        #result is 1 if time is less than 48 hrs. else result is 0
+        result = query_db("SELECT cast((strftime('%s','now','localtime')- strftime('%s',?)) AS real)/60/60 < 48.00",t,one=True)
+        return result[0] == 1
+
+
+
+
+
     #returns true if send limit has not been exceeded for a given email
     def checkSendLimit(self, email):
         emailLib = Email()
         if emailLib.emailExists(email):
-        #does the email have a timestamp of today?
+        #has a verification email been sent today?
             today = self.verificationFromToday(email)
             if today:
                 count = self.getCount(email)

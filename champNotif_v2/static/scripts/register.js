@@ -40,7 +40,14 @@ $(document).ready(function(){
                   data: { varEmail: email, varPassword: pw},
                   success: function(data, textStatus, jqXHR)
                   {
-                      alert("An email was sent for verification."  );
+                      alert("email registered");
+
+
+                  },
+                  error: function(data,textStatus)
+                  {
+                        alert("This email already exists.");
+
                   },
                 });//ajax call
             }//end if

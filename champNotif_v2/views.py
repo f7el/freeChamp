@@ -6,7 +6,14 @@ from Email import *
 emailLib = Email()
 @app.route('/')
 def index():
-    return render_template('login.html')
+    isAlive = emailLib.tokenIsAlive("2458")
+    if isAlive:
+        flash("true")
+    else:
+        flash("false")
+
+    return render_template('test.html')
+    #return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -69,12 +76,12 @@ def verifyEmail(email=None):
     #         return "email verification sent"
     #     else:
     #         return False
-    # else:
-    #     canSend = emailLib.checkSendLimit(email)
-    #     if canSend:
-    #         token = emailLib.genRandomString()
-    #         emailLib.addVerification(email,token)
-    #         emailLib.sendVerificationEmail(email,token)
-    #         return "email verification sent"
-    #     else:
-    #         abort(404)
+    else:
+        canSend = emailLib.checkSendLimit(email)
+        if canSend:
+            token = emailLib.genRandomString()
+            emailLib.addVerification(email,token)
+            emailLib.sendVerificationEmail(email,token)
+            return "email verification sent"
+        else:
+            abort(404)
