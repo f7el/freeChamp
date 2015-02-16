@@ -4,9 +4,9 @@
 <form action="{{url_for('verifyEmail') }}" method="get">
 <p>If you lost your initial verification e-mail you may request for another to be sent.</p><br><br>
 
-Email: <input type="text" name="email">
+Email: <input type="text" name="email" value="vandamere@gmail.com">
 <input type="submit" value="submit">
 </form><br>
 
-*2 verification emails may be requested per day
+*2 verification emails may be requested every 48-hrs
 {% endblock %}

@@ -6,13 +6,9 @@ from Email import *
 emailLib = Email()
 @app.route('/')
 def index():
-    isAlive = emailLib.tokenIsAlive("2458")
-    if isAlive:
-        flash("true")
-    else:
-        flash("false")
-
-    return render_template('test.html')
+    g.db = get_db()
+    g.db.execute("insert into USERS values('test','pw','salt',0)")
+    g.db.commit()
     #return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
@@ -82,6 +78,7 @@ def verifyEmail(email=None):
             token = emailLib.genRandomString()
             emailLib.addVerification(email,token)
             emailLib.sendVerificationEmail(email,token)
-            return "email verification sent"
+            flash("email verification sent")
+            return render_template('sendVerification.html')
         else:
             abort(404)

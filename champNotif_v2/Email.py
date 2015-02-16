@@ -18,6 +18,7 @@ class Email:
     def _getToken(self, email):
         t = (email,)
         result = query_db('SELECT token FROM verification WHERE email=?',t,one=True)
+        print result
         return result['token']
 
     def addEmail(self, email, password, salt, isVerified):
@@ -63,7 +64,6 @@ class Email:
         return hash.hexdigest()
 
 
-
     def genNewToken(self,email):
         g.db = get_db()
         newToken = self.genRandomString()
@@ -72,15 +72,6 @@ class Email:
         g.db.execute('UPDATE verification SET token=?, timestamp=datetime("now","localtime") WHERE token=?',t)
         g.db.commit()
         return newToken
-
-    #returns a list where first element is 1 or 0 and 2nd is email if 1 is returned
-    def tokenIsActive(self,token):
-        t = (token,)
-        result = query_db('SELECT COUNT(*),email FROM verification WHERE token=? and datetime("now","localtime") < datetime(timestamp,"+2 day")',t)
-        print result[0]
-        return result[0]
-
-
 
     def sendVerificationEmail(self, email, token):
         notificationEmail = app.config['NOTIFICATIONEMAIL']
@@ -109,15 +100,6 @@ class Email:
             server.quit()
 
 
-    def verificationFromToday(self, email):
-        t = (email,)
-        result = query_db("SELECT count(strftime('%Y-%m-%d',timestamp,'localtime')) from verification WHERE strftime(" + \
-                          "'%Y-%m-%d',timestamp,'localtime')=strftime('%Y-%m-%d','now','localtime') and email=?",t,one=True)
-
-        count = result[0]
-        print "querying ver from today. result: " + str(count)
-        return count == 1
-
     def resetVerificationCount(self, email):
         g.db = get_db()
         t = (email,)
@@ -125,8 +107,8 @@ class Email:
         g.db.commit()
 
     def updateVerificationCount(self, email, count):
+        t = (count, email)
         g.db = get_db()
-        t = (count,email)
         g.db.execute('UPDATE verification SET count=? WHERE email=?',t)
         g.db.commit()
 
@@ -152,9 +134,8 @@ class Email:
     def checkSendLimit(self, email):
         emailLib = Email()
         if emailLib.emailExists(email):
-        #has a verification email been sent today?
-            today = self.verificationFromToday(email)
-            if today:
+            token = self._getToken(email)
+            if self.tokenIsAlive(token):
                 count = self.getCount(email)
                 if count == 0:
                     self.updateVerificationCount(email,1)
