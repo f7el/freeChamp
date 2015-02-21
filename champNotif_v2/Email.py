@@ -18,21 +18,23 @@ class Email:
     def _getToken(self, email):
         t = (email,)
         result = query_db('SELECT token FROM verification WHERE email=?',t,one=True)
-        print result
-        return result['token']
+        return result[0]
 
     def addEmail(self, email, password, salt, isVerified):
         t = (email, password, salt, isVerified)
-        g.db.execute('INSERT INTO USERS VALUES (?,?,?,?)', t)
+        g.db.execute('INSERT INTO USERS VALUES (?,?,?,?)',t)
         g.db.commit()
         #newId = cur.lastrowid
 
         #return newId
 
+    #register is a boolean. true means i can set the count to 0
     def addVerification(self, email, token):
         db = get_db()
-        t = (token,email)
-        db.execute('INSERT INTO VERIFICATION SET token=?, timestamp=datetime("now",localtime"),count=0,email=?',t)
+        dt = query_db("SELECT datetime('now','localtime')",one=True)
+        t = (token,dt[0],email)
+        db.execute("INSERT INTO VERIFICATION values(?,?,'0',?)",t)
+        self.updateVerificationCount(email,1)
         g.db.commit()
 
 
@@ -87,7 +89,8 @@ class Email:
         #server.sendmail(notificationEmail,email,msg)
 
         #msg = MIMEText("Click the link to confirm your e-mail \n\n http://www.freechamp.sonyar.info/verify.py?token="+token)
-        msg = MIMEText("Click the link to confirm your e-mail \n\n" + server + "/verifyEmail?token="+token)
+        msg = MIMEText("Click the link to confirm your e-mail \n\n" + "http://" + str(app.config['SERVER']) + \
+                       "/verifyEmail?token="+token)
         msg['To'] = email
         msg['From'] =notificationEmail
         msg['Subject'] = 'email verification'
@@ -126,11 +129,16 @@ class Email:
         result = query_db("SELECT cast((strftime('%s','now','localtime')- strftime('%s',?)) AS real)/60/60 < 48.00",t,one=True)
         return result[0] == 1
 
+    def verificationFromToday(self, email):
+         g.db = get_db()
+         t = (email,)
+         result = query_db("SELECT count(strftime('%Y-%m-%d',timestamp,'localtime')) from verification WHERE strftime(" + \
+                          "'%Y-%m-%d',timestamp,'localtime')=strftime('%Y-%m-%d','now','localtime') and email=?",t,one=True)
+         count = result[0]
+         return count == 1
 
 
-
-
-    #returns true if send limit has not been exceeded for a given email
+     #returns true if send limit has not been exceeded for a given email
     def checkSendLimit(self, email):
         emailLib = Email()
         if emailLib.emailExists(email):
@@ -147,12 +155,6 @@ class Email:
                     return False
         else:
             return False
-
-
-
-
-
-
 
 
 

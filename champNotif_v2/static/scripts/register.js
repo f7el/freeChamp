@@ -40,7 +40,7 @@ $(document).ready(function(){
                   data: { varEmail: email, varPassword: pw},
                   success: function(data, textStatus, jqXHR)
                   {
-                      alert("email registered");
+                      alert("email verification sent");
 
 
                   },

@@ -27,7 +27,7 @@ $(document).ready(function(){
          var formData = {varEmail: email};
         $.ajax({
             type: "POST",
-            url: "/ValidateEmail.py",
+            url: "/verifyEmail.py",
             data: formData,
             success: function(data){
                 #if the email is a valid format, check if they have exceeded their send limit

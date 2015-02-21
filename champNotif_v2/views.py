@@ -6,10 +6,7 @@ from Email import *
 emailLib = Email()
 @app.route('/')
 def index():
-    g.db = get_db()
-    g.db.execute("insert into USERS values('test','pw','salt',0)")
-    g.db.commit()
-    #return render_template('login.html')
+    return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -51,7 +48,9 @@ def processRegister():
             newPw = emailLib.securePw(salt,pw)
             isVerified = 0 #false
             emailLib.addEmail(email, newPw, salt, isVerified)
-            verifyEmail(email)
+            token = emailLib.genRandomString()
+            emailLib.addVerification(email,token)
+            emailLib.sendVerificationEmail(email,token)
 
         #NEED TO MAKE CUSTOM HANDLER FOR EMAIL ALREADY EXISTS <---------------------------------------------
         else:
