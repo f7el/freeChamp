@@ -126,8 +126,8 @@ class Email:
         timeStamp = result[0]
         t = (timeStamp,)
         #result is 1 if time is less than 48 hrs. else result is 0
-        result = query_db("SELECT cast((strftime('%s','now','localtime')- strftime('%s',?)) AS real)/60/60 < 48.00",t,one=True)
-        return result[0] == 1
+        (isExpired,) = query_db("SELECT cast((strftime('%s','now','localtime')- strftime('%s',?)) AS real)/60/60 < 48.00",t,one=True)
+        return isExpired == 1
 
     def verificationFromToday(self, email):
          g.db = get_db()

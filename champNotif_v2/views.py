@@ -6,6 +6,7 @@ from Email import *
 emailLib = Email()
 @app.route('/')
 def index():
+    emailLib.tokenIsAlive("1234")
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
@@ -56,28 +57,20 @@ def processRegister():
         else:
             abort(400)
 
-@app.route('/verifyEmail')
-def verifyEmail(email=None):
-    if email == None:
-        email = request.args.get('email')
-        canSend = emailLib.checkSendLimit(email)
-        return render_template('sendVerification.html')
+@app.route('/sendAnotherVerification', methods=['GET'])
+def sendAnotherVerification():
+    if request.method == 'GET':
+        email = request.args['email']
+        if emailLib.emailExists(email):
+            canSend = emailLib.checkSendLimit(email)
+            if canSend:
+                token = emailLib.genNewToken(email)
+                emailLib.sendVerificationEmail(email,token)
 
+@app.route('/verifyEmail', methods=['GET'])
+def verifyEmail():
+    #get the request token from the url
+    requestToken = request.args['token']
 
-        if canSend:
-            token = emailLib.genRandomString()
-    #         emailLib.addVerification(email,token)
-    #         emailLib.sendVerificationEmail(email,token)
-    #         return "email verification sent"
-    #     else:
-    #         return False
-    else:
-        canSend = emailLib.checkSendLimit(email)
-        if canSend:
-            token = emailLib.genRandomString()
-            emailLib.addVerification(email,token)
-            emailLib.sendVerificationEmail(email,token)
-            flash("email verification sent")
-            return render_template('sendVerification.html')
-        else:
-            abort(404)
+    #check if the token is in the verification data
+
