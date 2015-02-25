@@ -3,10 +3,13 @@ __author__ = 'Paul'
 from champNotif_v2 import app
 from flask import session, redirect, url_for, render_template, request, abort,flash
 from Email import *
+from token import *
+from security import securePw
+
 emailLib = Email()
 @app.route('/')
 def index():
-    emailLib.tokenIsAlive("1234")
+    print tokenExists("1234")
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
@@ -23,7 +26,6 @@ def login():
             return redirect(url_for('member_page')) #FIX ME LATER
     return render_template('login.html', error=error)
 
-
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
@@ -36,7 +38,6 @@ def register():
 @app.route('/verifyEmailForm')
 def verifyEmailForm():
     return render_template('sendVerification.html')
-
 
 @app.route('/processRegister', methods=['POST'])
 def processRegister():
@@ -73,4 +74,8 @@ def verifyEmail():
     requestToken = request.args['token']
 
     #check if the token is in the verification data
-
+    exist = tokenExists(requestToken)
+    if exist:
+        email = getEmailFromToken(requestToken)
+        emailLib.makeEmailActive(email)
+        return render_template('/')
