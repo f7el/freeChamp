@@ -1,2 +1,4 @@
 champNotif_v2/info.py
-champNotif_v2/info.pyc
+*.pyc
+.idea/*
+
