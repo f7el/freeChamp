@@ -31,10 +31,10 @@ def genNewToken(self,email):
 
 def tokenExists(email):
     t = (email,)
-    (exists,email) = query_db("SELECT COUNT(token) FROM VERIFICATION WHERE token=?", t, one=True)
+    (exists,) = query_db("SELECT COUNT(token) FROM VERIFICATION WHERE token=?", t, one=True)
     return exists == 1
 
-def getEmailFromToken(self,token):
+def getEmailFromToken(token):
     t = (token,)
     (email,) = query_db("SELECT email FROM VERIFICATION WHERE token=?",t,one=True)
     return email

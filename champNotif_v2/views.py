@@ -5,11 +5,11 @@ from flask import session, redirect, url_for, render_template, request, abort,fl
 from Email import *
 from token import *
 from security import securePw
+from utility import genRandomString
 
 emailLib = Email()
 @app.route('/')
 def index():
-    print tokenExists("1234")
     return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
@@ -45,14 +45,16 @@ def processRegister():
         email = request.form['varEmail']
         if not emailLib.emailExists(email):
             pw = request.form['varPassword']
-            salt = emailLib.genRandomString()
+            salt = genRandomString()
             #hash(salt + pw)
-            newPw = emailLib.securePw(salt,pw)
+            newPw = securePw(salt,pw)
             isVerified = 0 #false
             emailLib.addEmail(email, newPw, salt, isVerified)
-            token = emailLib.genRandomString()
+            token = genRandomString()
             emailLib.addVerification(email,token)
             emailLib.sendVerificationEmail(email,token)
+            return 'OK'
+
 
         #NEED TO MAKE CUSTOM HANDLER FOR EMAIL ALREADY EXISTS <---------------------------------------------
         else:
@@ -78,4 +80,5 @@ def verifyEmail():
     if exist:
         email = getEmailFromToken(requestToken)
         emailLib.makeEmailActive(email)
-        return render_template('/')
+        return render_template('emailActive.html')
+
