@@ -37,7 +37,6 @@ class Email:
         t = (email,)
         result = query_db('SELECT COUNT(email) FROM USERS WHERE email=(?)',t,one=True)
         count = result[0]
-        print "count: " + str(count)
         if count > 0:
             return True
         return False

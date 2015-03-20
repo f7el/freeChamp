@@ -15,7 +15,33 @@ def index():
 @app.route('/login', methods=['POST'])
 def login():
     error = None
-    if request.method == 'POST':
+
+    postEmail = request.form['varEmail']
+    postPw = request.form['varPassword']
+    t = (postEmail,)
+    if emailLib.emailExists(postEmail):
+        result = query_db('SELECT * FROM users WHERE email=?', t)
+        resultList = result[0]
+        email, hashedPw, salt, isVerified = resultList
+
+        if isVerified == 1:
+            isVerified = True
+        else:
+            isVerified = False
+
+        print "isVerified: " + str(isVerified)
+        if isVerified:
+            loginPw = securePw(salt, postPw)
+
+            if loginPw == hashedPw:
+                session['logged_in'] = True
+                return redirect('member_pg')
+            else:
+                abort(401)
+        else:
+            abort(401)
+
+
 
         if request.form['email'] != None: #FIX ME LATER
             error = 'invalid login'

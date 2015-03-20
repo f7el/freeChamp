@@ -12,17 +12,19 @@ $(document).ready(function(){
         return false;
       }
 
-      var formData = {varEmail: email, varPw: pw};
+
+      console.log("test");
       //alert (dataString);return false;
       $.ajax({
         type: "POST",
-        url: "/checkLogin.py",
-        data: formData,
+        url: "/login",
+        data:  {varEmail: email, varPassword: pw},
         success: function(data) {
+        alert("success");
 
         }
-    });
-  return false;
+    });//ajax call
+
 
 
     });//click function
