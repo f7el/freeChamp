@@ -1,6 +1,7 @@
 __author__ = 'Paul'
-from flask import _app_ctx_stack, g
 from champNotif_v2 import app
+from flask import _app_ctx_stack, g
+
 import sqlite3
 
 def get_db():

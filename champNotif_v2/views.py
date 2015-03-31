@@ -107,4 +107,7 @@ def verifyEmail():
         email = getEmailFromToken(requestToken)
         emailLib.makeEmailActive(email)
         return render_template('emailActive.html')
+    else:
+        return render_template('emailVerificationFailed.html')
+
 
