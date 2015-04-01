@@ -4,7 +4,7 @@ from flask import g
 from champNotif_v2 import app
 import sqlite3, os, hashlib, smtplib
 from database import get_db,query_db
-from token import *
+from champToken import *
 from info import *
 
 from email.mime.text import MIMEText

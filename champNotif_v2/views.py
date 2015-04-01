@@ -3,7 +3,7 @@ __author__ = 'Paul'
 from champNotif_v2 import app
 from flask import session, redirect, url_for, render_template, request, abort,flash
 from Email import *
-from token import *
+from champToken import *
 from security import securePw
 from utility import genRandomString
 
