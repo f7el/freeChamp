@@ -1,26 +1,39 @@
 __author__ = 'Paul'
 from champNotif_v2 import app
+import json
 import requests
+
+naEndpoint = "na.api.pvp.net"
 api_key = app.config['API_KEY']
-champApiVer = "1.2"
-champApi = "/api/lol/NA/" + champApiVer + "/champion/"
-naEndpoint = "na.api.pvp.net/"
-champApiUrl = "https://" + naEndpoint + champApi + "?api_key=" + api_key
+staticDataVer = "v1.2"
+champApi = "api/lol/NA/" + staticDataVer + "/champion"
 
-def dictToList(self, champDict):
-    "turn a dict of champs to a list of champs"
-    champList = []
-    for champ in champDict:
-        if champ == "MonkeyKing":
-            champ = "Wukong"
+# def dictToList(champDict):
+#     "turn a dict of champs to a list of champs"
+#     champList = []
+#     for champ in champDict:
+#         if champ == "MonkeyKing":
+#             champ = "Wukong"
+#
+#     champList.append(champ)
+#     return champList
 
-    champList.append(champ)
-#global.api.pvp.net
-#na.api.pvp.net
+#gets a dict of champion lists
+def getChampionsDict():
+    champApiUrl = "https://" + naEndpoint + "/" + champApi + "?api_key=" + api_key
+    r = requests.get(champApiUrl)
+    jObj = r.json()
+    return jObj['champions']
+
+def getChampById(id):
+    response = requests.get("https://global.api.pvp.net/api/lol/static-data/na/" + staticDataVer +"/champion/" + id + "?api_key=" + api_key)
+    dict = response.json()
+    return dict['name']
 
 def main():
-    r = requests.get(champApiUrl)
-    print (r)
+    return None
+
+
 
 if __name__ == '__main__':
     main()
