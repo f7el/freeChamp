@@ -1,7 +1,6 @@
 __author__ = 'Paul'
 from champNotif_v2 import app
-import json
-import requests
+import json, requests, time
 
 naEndpoint = "na.api.pvp.net"
 api_key = app.config['API_KEY']
@@ -18,8 +17,7 @@ champApi = "api/lol/NA/" + staticDataVer + "/champion"
 #     champList.append(champ)
 #     return champList
 
-#gets a dict of champion lists
-def getChampionsDict():
+def getListOfChampDicts():
     champApiUrl = "https://" + naEndpoint + "/" + champApi + "?api_key=" + api_key
     r = requests.get(champApiUrl)
     jObj = r.json()
@@ -30,8 +28,18 @@ def getChampById(id):
     dict = response.json()
     return dict['name']
 
+def getListOfChamps():
+    champList = []
+    objOfLists = getListOfChampDicts()
+    for dict in objOfLists:
+        champList.append(getChampById(str(dict['id'])))
+    return champList
+
+
 def main():
-    return None
+    test = getListOfChamps()
+    print test
+
 
 
 
