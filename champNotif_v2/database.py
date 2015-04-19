@@ -1,7 +1,6 @@
 __author__ = 'Paul'
 from champNotif_v2 import app
 from flask import _app_ctx_stack, g
-
 import sqlite3
 
 def get_db():
@@ -20,7 +19,7 @@ def get_db():
 def close_db_connection(exception):
     """Closes the database again at the end of the request."""
     top = _app_ctx_stack.top
-    if hasattr(top, 'sqlite_db'):
+    if hasattr(top, 'sqlite6_db'):
         top.sqlite_db.close()
 
 

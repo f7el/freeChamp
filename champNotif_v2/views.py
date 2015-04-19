@@ -1,16 +1,20 @@
 __author__ = 'Paul'
 
 from champNotif_v2 import app
-from flask import session, redirect, url_for, render_template, request, abort,flash
+from flask import session, redirect, url_for, render_template, request, abort, flash
 from Email import *
 from champToken import *
 from security import securePw
 from utility import genRandomString
+from riotApi import getListOfChamps
+
 
 emailLib = Email()
 @app.route('/')
 def index():
-    return render_template('login.html')
+   result = query_db("select * from champs")
+   print result[0]
+    #return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -109,5 +113,23 @@ def verifyEmail():
         return render_template('emailActive.html')
     else:
         return render_template('emailVerificationFailed.html')
+
+@app.route('/admin', methods=['GET'])
+def admin():
+    return render_template('admin.html')
+
+@app.route('/insertChamps',methods=['GET'])
+def insertChamps():
+    g.db = get_db()
+    champs = getListOfChamps()
+    for element in champs:
+        g.db.execute("INSERT INTO CHAMPS VALUES (?)", (element,))
+    g.db.commit()
+    flash("success")
+    return render_template('admin.html')
+
+
+
+
 
 
