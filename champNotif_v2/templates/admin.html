@@ -1,7 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
 <table>
-  <tr>database</tr>
-    <td><a href="{{ url_for('insertChamps') }}">insert champs</a></td>
+  <tr>
+      <th>insert champs/ids</th>
+      <th>check for new champ</th>
+  </tr>
+  <tr>
+    <td><a href="{{ url_for('insertChampsIds') }}">insert</a></td>
+  </tr>
+  <tr>check for new champs</tr>
+    <td><a href="{{ url_for('checkForNewChamps') }}">check</a></td></td>
 </table>
 {% endblock %}

@@ -6,7 +6,7 @@ from Email import *
 from champToken import *
 from security import securePw
 from utility import genRandomString
-from riotApi import getListOfChamps
+from riotApi import getDataDict
 
 
 emailLib = Email()
@@ -118,15 +118,24 @@ def verifyEmail():
 def admin():
     return render_template('admin.html')
 
-@app.route('/insertChamps',methods=['GET'])
-def insertChamps():
+@app.route('/insertChampsIds',methods=['GET'])
+def insertChampsIds():
     g.db = get_db()
-    champs = getListOfChamps()
-    for element in champs:
-        g.db.execute("INSERT INTO CHAMPS VALUES (?)", (element,))
+    dict = getDataDict()
+    keys = dict.keys()
+    for key in keys:
+        champ = dict[key]
+        name = champ['name']
+        id = champ['id']
+        t = (name, id)
+        g.db.execute("INSERT INTO CHAMPS VALUES (?,?)", t)
     g.db.commit()
     flash("success")
     return render_template('admin.html')
+
+@app.route('/checkForNewChamps', methods=['GET'])
+def checkForNewChamps():
+
 
 
 
