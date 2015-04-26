@@ -135,7 +135,26 @@ def insertChampsIds():
 
 @app.route('/checkForNewChamps', methods=['GET'])
 def checkForNewChamps():
+    champs = [champ[0] for champ in query_db("select champ from champs")]
 
+
+
+    dataDic = getDataDict()
+    # dbIdNum = len(dbIds)
+    # dataNum = len(dataDic)
+    #if dbIdNum == dataNum:
+    if False:
+        flash("champ db up-to-date")
+    else:
+        #create list of ids from api call for comparison
+        keys = dataDic.keys()
+        apiNames = []
+        for key in keys:
+            champ = dataDic[key]
+            apiNames.append(champ['name'])
+        apiNames.append("Kyle")
+        test = list(set(apiNames) - set(champs))
+    return render_template('admin.html')
 
 
 

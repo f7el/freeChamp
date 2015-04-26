@@ -39,8 +39,7 @@ def getListOfChamps():
     return champList
 
 def main():
-    dict = getDataDict()
-    print dict.keys()
+    return None
 
 if __name__ == "__main__":
     main()
