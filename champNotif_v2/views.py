@@ -118,17 +118,16 @@ def verifyEmail():
 def admin():
     return render_template('admin.html')
 
-@app.route('/insertChampsIds',methods=['GET'])
-def insertChampsIds():
+@app.route('/insertChamps',methods=['GET'])
+def insertChamps():
     g.db = get_db()
     dict = getDataDict()
     keys = dict.keys()
     for key in keys:
         champ = dict[key]
         name = champ['name']
-        id = champ['id']
-        t = (name, id)
-        g.db.execute("INSERT INTO CHAMPS VALUES (?,?)", t)
+        t = (name,)
+        g.db.execute("INSERT INTO CHAMPS VALUES (?)", t)
     g.db.commit()
     flash("success")
     return render_template('admin.html')
@@ -136,24 +135,28 @@ def insertChampsIds():
 @app.route('/checkForNewChamps', methods=['GET'])
 def checkForNewChamps():
     champs = [champ[0] for champ in query_db("select champ from champs")]
-
-
-
     dataDic = getDataDict()
-    # dbIdNum = len(dbIds)
-    # dataNum = len(dataDic)
-    #if dbIdNum == dataNum:
-    if False:
-        flash("champ db up-to-date")
+
+    #get champ keys
+    keys = dataDic.keys()
+    apiNames = []
+    for key in keys:
+        champ = dataDic[key]
+        apiNames.append(champ['name'])
+    apiNames.append("Kyle")
+    #subract the latest champ set from the database set. the difference are new champs
+    newChamps = list(set(apiNames) - set(champs))
+    #add the new champs to the database
+    if len(newChamps) > 0:
+        newChamps = tuple(newChamps)
+        g.db = get_db()
+        g.db.execute("INSERT INTO CHAMPS VALUES (?)", (newChamps,))
+        g.db.commit
+        flash ("champ db has been updated")
+
     else:
-        #create list of ids from api call for comparison
-        keys = dataDic.keys()
-        apiNames = []
-        for key in keys:
-            champ = dataDic[key]
-            apiNames.append(champ['name'])
-        apiNames.append("Kyle")
-        test = list(set(apiNames) - set(champs))
+        flash("champ database up-to-date")
+
     return render_template('admin.html')
 
 
