@@ -144,14 +144,16 @@ def checkForNewChamps():
         champ = dataDic[key]
         apiNames.append(champ['name'])
     apiNames.append("Kyle")
+    apiNames.append("Paul")
     #subract the latest champ set from the database set. the difference are new champs
     newChamps = list(set(apiNames) - set(champs))
     #add the new champs to the database
     if len(newChamps) > 0:
-        newChamps = tuple(newChamps)
         g.db = get_db()
-        g.db.execute("INSERT INTO CHAMPS VALUES (?)", (newChamps,))
-        g.db.commit
+        for champ in newChamps:
+            t = (champ,)
+            g.db.execute("INSERT INTO CHAMPS VALUES (?)", t)
+        g.db.commit()
         flash ("champ db has been updated")
 
     else:
