@@ -1,0 +1,35 @@
+div#champ_box {
+        height: 300px;
+        margin: 10px 0;
+        background-color: #efefef;
+    }
+        div#champ_box div.champ {
+            width: 84px;
+            height: 100px;
+            float: left;
+            position: relative;
+            cursor: pointer;
+        }
+            div#champ_box div.champ img.champ_thumbnail {
+                width: 50px;
+                height: 50px;
+                margin: 15px auto 3px;
+                display: block;
+                border: 3px solid #efefef;
+            }
+            div#champ_box div.champ img.nocheck {
+                display: none !important;
+            }
+            div#champ_box div.champ img.check {
+                width: 12px;
+                height: 12px;
+                position: absolute;
+                right: 17px;
+                top: 18px;
+                display: block;
+            }
+            div#champ_box div.champ p {
+                font-family: Arial,helvetica,sans-serif;
+                font-size: 12px;
+                text-align: center;
+            }

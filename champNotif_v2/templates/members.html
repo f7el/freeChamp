@@ -1,4 +1,64 @@
 {% extends "layout.html" %}
 {% block body %}
+<script>
+    window.UserEmail = "{{ postEmail }}";
+    $( document ).ready(function() {
+         $.ajax({
+                type: "POST",
+                url: "/logged_in",
+                data:  {},
+                success: function(data) {
+                },
+                error: function(data) {
+                    window.location = '/';
+                }
+            });
+        $("div.champ").click(function() {
+        if( $(this).find('img.nocheck').length > 0) {
+            $(this).find('img.nocheck').removeClass("nocheck");
+            $(this).find('img.champ_thumbnail').css("border-color", "#3f96cf");
+            //$("#Msg").html($(this).find("p").text() + " Checked");
+
+            $.ajax({
+                type: "POST",
+                url: "/champSelected",
+                data:  {varUser: window.UserEmail, varChampName: $(this).find("p").text()},
+                success: function(data) {
+                }
+            });
+        } else {
+            $(this).find('img.check').addClass("nocheck");
+            $(this).find('img.champ_thumbnail').css("border-color", "#efefef");
+            //$("#Msg").html($(this).find("p").text() + " Unchecked");
+
+            $.ajax({
+                type: "POST",
+                url: "/champUnselected",
+                data:  {varUser: window.UserEmail, varChampName: $(this).find("p").text()},
+                success: function(data) {
+                }
+            });
+        }
+    });
+    });
+</script>
+
 <h2>member page</h2>
+        <h3 id="Temp"></h3>
+<div id="champ_box">
+
+{% for champ, key in dictChamps.iteritems(): %}
+        <div class="champ">
+            <img class="check nocheck" src="http://i.imgur.com/fA6Z6.png" />
+            <img class="champ_thumbnail"
+         src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ key }}.png" />
+
+            <p>{{ champ }}</p>
+        </div>
+{% endfor %}
+
+</div>
+
+
+
 {% endblock %}

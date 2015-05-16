@@ -12,16 +12,16 @@ from riotApi import getDataDict
 emailLib = Email()
 @app.route('/')
 def index():
-   result = query_db("select * from champs")
-   print result[0]
-    #return render_template('login.html')
+    return render_template('login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
     error = None
 
-    postEmail = request.form['varEmail']
-    postPw = request.form['varPassword']
+    #postEmail = request.form['varEmail']
+    #postPw = request.form['varPassword']
+    postEmail = request.form['email']
+    postPw = request.form['pw']
     t = (postEmail,)
     if emailLib.emailExists(postEmail):
         result = query_db('SELECT * FROM users WHERE email=?', t)
@@ -39,13 +39,12 @@ def login():
 
             if loginPw == hashedPw:
                 session['logged_in'] = True
-                return redirect('member_pg')
+                session['email'] = postEmail
+                return redirect(url_for('members'))
             else:
                 abort(401)
         else:
             abort(401)
-
-
 
         if request.form['email'] != None: #FIX ME LATER
             error = 'invalid login'
@@ -56,10 +55,21 @@ def login():
             return redirect(url_for('member_page')) #FIX ME LATER
     return render_template('login.html', error=error)
 
+@app.route('/members')
+def members():
+    if 'logged_in' in session:
+        champ = [champ[0] for champ in query_db("select champ from champs")]
+        key = [key[0] for key in query_db("select key from champs")]
+        dictChamps = dict(zip(champ,key))
+        return render_template('members.html', dictChamps=dictChamps, postEmail=session['email'])
+    else:
+        return render_template('401.html')
+
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
-    return redirect(url_for('login'))
+    session.pop('email', None)
+    return redirect(url_for('index'))
 
 @app.route('/register')
 def register():
@@ -126,8 +136,9 @@ def insertChamps():
     for key in keys:
         champ = dict[key]
         name = champ['name']
-        t = (name,)
-        g.db.execute("INSERT INTO CHAMPS VALUES (?)", t)
+        key = champ['key']
+        t = (name,key)
+        g.db.execute("INSERT INTO CHAMPS VALUES (?,?)", t)
     g.db.commit()
     flash("success")
     return render_template('admin.html')
@@ -161,8 +172,37 @@ def checkForNewChamps():
 
     return render_template('admin.html')
 
+@app.route('/champUnselected', methods=['POST'])
+def champUnselected():
+    if 'logged_in' in session:
+        email = request.form['varUser']
+        champName = request.form['varChampName']
+        t = (email, champName)
+        g.db = get_db()
+        g.db.execute("DELETE FROM NOTIFY WHERE email=(?) and champ=(?)", t)
+        g.db.commit()
+        return 'OK'
+    abort(401)
 
 
+@app.route('/champSelected', methods=['POST'])
+def champSelected():
+    if 'logged_in' in session:
+        email = request.form['varUser']
+        champName = request.form['varChampName']
+        t = (champName, email)
+        g.db = get_db()
+        g.db.execute("INSERT INTO NOTIFY VALUES (?,?)", t)
+        g.db.commit()
+        return 'OK'
+    abort(401)
 
+@app.route('/unauthorized', methods=['GET'])
+def unauthorized():
+    return render_template('401.html')
 
-
+@app.route('/logged_in', methods=['POST'])
+def logged_in():
+    if 'logged_in' in session:
+        return 'OK'
+    abort(401)

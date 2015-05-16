@@ -37,9 +37,15 @@ def getListOfChamps():
     for dict in objOfLists:
         champList.append(getChampById(str(dict['id'])))
     return champList
+#
+# def getDragonVer():
+#     url = "https://" + globalEndpoint + lolStaticData + versions?api_key=" + api_key
+#     response = requests.get(url)
+#     print response.json()
+
+
 
 def main():
-    return None
-
+  None
 if __name__ == "__main__":
     main()

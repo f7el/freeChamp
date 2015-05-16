@@ -1,15 +1,17 @@
 {% extends "layout.html" %}
 {% block body %}
-  <script type=text/javascript src="{{
-  url_for('static', filename='scripts/login.js') }}"></script>
   <h2>Login</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+        <form method="post" action="{{ url_for('login') }}">
+
+
     <dl>
       <dt>Email:
       <dd><input type="text" name="email" id="email" value="vandamere@gmail.com">
       <dt>Password:
-      <dd><input type="password" name="pw" id="pw" value="test">
+      <dd><input type="password" name="pw" id="pw" value="1">
       <dd><input type=submit value=Login id="submit"><br>
+          </form>
       <dt><a href="{{url_for('register')}}">register</a>
 
     </dl>
