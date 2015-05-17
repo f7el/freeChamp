@@ -58,10 +58,19 @@ def login():
 @app.route('/members')
 def members():
     if 'logged_in' in session:
-        champ = [champ[0] for champ in query_db("select champ from champs")]
-        key = [key[0] for key in query_db("select key from champs")]
-        dictChamps = dict(zip(champ,key))
-        return render_template('members.html', dictChamps=dictChamps, postEmail=session['email'])
+        t = session['email']
+        lstChamps = query_db("""SELECT champs.champ, champs.key,
+                                    case when notify.email is not null
+                                        then 'true'
+                                        else 'false'
+                                    end Selected
+                                FROM champs
+                                LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = (?)
+                                ORDER BY champs.champ;""", (t,))
+        # champ = [champ[0] for champ in query_db("select champ from champs")]
+        # key = [key[0] for key in query_db("select key from champs")]
+        # dictChamps = dict(zip(champ,key))
+        return render_template('members.html', lstChamps=lstChamps, postEmail=session['email'])
     else:
         return render_template('401.html')
 
@@ -206,3 +215,15 @@ def logged_in():
     if 'logged_in' in session:
         return 'OK'
     abort(401)
+
+@app.route('/query')
+def query():
+    lstChamps = query_db("""SELECT champs.champ, champs.key,
+                                    case when notify.email is not null
+                                        then 'true'
+                                        else 'false'
+                                    end Selected
+                                FROM champs
+                                LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = 'vandamere@gmail.com'
+                                ORDER BY champs.champ;""")
+    print lstChamps[0]['champ'] + lstChamps[0]['key'] + lstChamps[0]['Selected']

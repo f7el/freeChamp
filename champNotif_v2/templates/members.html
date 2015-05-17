@@ -47,13 +47,18 @@
         <h3 id="Temp"></h3>
 <div id="champ_box">
 
-{% for champ, key in dictChamps.iteritems(): %}
+{% for champInfo in lstChamps: %}
         <div class="champ">
+            {% if champInfo['Selected'] == 'true' %}
+            <img class="check" src="http://i.imgur.com/fA6Z6.png" />
+            <img class="champ_thumbnail" style='border-color: #3f96cf'
+         src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ champInfo['key'] }}.png" />
+            {% else %}
             <img class="check nocheck" src="http://i.imgur.com/fA6Z6.png" />
             <img class="champ_thumbnail"
-         src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ key }}.png" />
-
-            <p>{{ champ }}</p>
+         src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ champInfo['key'] }}.png" />
+            {% endif %}
+            <p>{{ champInfo['champ'] }}</p>
         </div>
 {% endfor %}
 
