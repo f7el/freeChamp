@@ -46,6 +46,6 @@ def getListOfChamps():
 
 
 def main():
-  None
+  print getListOfChampDicts()
 if __name__ == "__main__":
     main()

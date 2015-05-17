@@ -65,6 +65,23 @@ class Email:
         finally:
             server.quit()
 
+    def sendEmail(self, toEmail, subject, body):
+        notificationEmail = app.config['NOTIFICATIONEMAIL']
+        emailPw = app.config['EMAILPW']
+        server = app.config['SERVER']
+        server = smtplib.SMTP('smtp.gmail.com',587)
+        server.starttls()
+        server.login(notificationEmail, emailPw)
+
+        msg = MIMEText(body)
+        msg['To'] = toEmail
+        msg['From'] = notificationEmail
+        msg['Subject'] = subject
+        try:
+            server.sendmail(notificationEmail, toEmail, msg.as_string())
+        finally:
+            server.quit()
+
     def resetVerificationCount(self, email):
         g.db = get_db()
         t = (email,)

@@ -6,7 +6,7 @@ from Email import *
 from champToken import *
 from security import securePw
 from utility import genRandomString
-from riotApi import getDataDict
+from riotApi import getDataDict, getListOfChampDicts
 
 
 emailLib = Email()
@@ -24,7 +24,7 @@ def login():
     postPw = request.form['pw']
     t = (postEmail,)
     if emailLib.emailExists(postEmail):
-        result = query_db('SELECT * FROM users WHERE email=?', t)
+        result = query_db('SELECT email, password, salt, isVerified FROM users WHERE email=?', t)
         resultList = result[0]
         email, hashedPw, salt, isVerified = resultList
 
@@ -146,8 +146,9 @@ def insertChamps():
         champ = dict[key]
         name = champ['name']
         key = champ['key']
-        t = (name,key)
-        g.db.execute("INSERT INTO CHAMPS VALUES (?,?)", t)
+        id = champ['id']
+        t = (name,key,int(id))
+        g.db.execute("INSERT INTO CHAMPS (champ, key, id) VALUES (?, ?, ?)", t)
     g.db.commit()
     flash("success")
     return render_template('admin.html')
@@ -163,8 +164,6 @@ def checkForNewChamps():
     for key in keys:
         champ = dataDic[key]
         apiNames.append(champ['name'])
-    apiNames.append("Kyle")
-    apiNames.append("Paul")
     #subract the latest champ set from the database set. the difference are new champs
     newChamps = list(set(apiNames) - set(champs))
     #add the new champs to the database
@@ -175,10 +174,8 @@ def checkForNewChamps():
             g.db.execute("INSERT INTO CHAMPS VALUES (?)", t)
         g.db.commit()
         flash ("champ db has been updated")
-
     else:
         flash("champ database up-to-date")
-
     return render_template('admin.html')
 
 @app.route('/champUnselected', methods=['POST'])
@@ -192,7 +189,6 @@ def champUnselected():
         g.db.commit()
         return 'OK'
     abort(401)
-
 
 @app.route('/champSelected', methods=['POST'])
 def champSelected():
@@ -227,3 +223,41 @@ def query():
                                 LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = 'vandamere@gmail.com'
                                 ORDER BY champs.champ;""")
     print lstChamps[0]['champ'] + lstChamps[0]['key'] + lstChamps[0]['Selected']
+
+@app.route('/freeChampPoll')
+def freeChampPoll():
+    champs = getListOfChampDicts()
+    dbIds = [id[0] for id in query_db("SELECT id from CHAMPS WHERE free=1")]
+    apiIds = []
+    for champ in champs:
+        if champ['freeToPlay']:
+            apiIds.append(champ['id'])
+    newFreeChamps = list(set(apiIds) - set(dbIds))
+
+    if len(newFreeChamps) > 0:
+        subject = "Free Champion Notification"
+        flash("New Free Champs!@#!@!#!@")
+        g.db = get_db()
+        #reset free bool
+        g.db.execute("UPDATE CHAMPS SET free = 0")
+        #for each champ id in the api call, show that champ as free in the db
+        for champId in apiIds:
+             g.db.execute("UPDATE Champs SET free = 1 WHERE id = (?)", (champId,))
+        g.db.commit()
+        #get a list of users that have selected champs they want to be notified when they are free
+        emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
+        for email in emails:
+            freeChampsSelectedByUser = [champ[0] for champ in query_db("""
+                SELECT champs.champ
+                FROM CHAMPS
+                JOIN notify ON champs.champ = notify.champ
+                where notify.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
+
+            msg = "Hello from Free Champ! Below are a list of champs that you wish to be notified when they are free: \n"
+
+            for champ in freeChampsSelectedByUser:
+                msg += champ + '\n'
+            emailLib.sendEmail(email, subject, msg)
+    else:
+        flash("no free champ update necessary")
+    return render_template('login.html')
