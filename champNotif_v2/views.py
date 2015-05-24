@@ -59,7 +59,7 @@ def login():
 def members():
     if 'logged_in' in session:
         t = session['email']
-        lstChamps = query_db("""SELECT champs.champ, champs.key,
+        lstChamps = query_db("""SELECT champs.champ, champs.key, champs.free,
                                     case when notify.email is not null
                                         then 'true'
                                         else 'false'
@@ -67,9 +67,8 @@ def members():
                                 FROM champs
                                 LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = (?)
                                 ORDER BY champs.champ;""", (t,))
-        # champ = [champ[0] for champ in query_db("select champ from champs")]
-        # key = [key[0] for key in query_db("select key from champs")]
-        # dictChamps = dict(zip(champ,key))
+
+
         return render_template('members.html', lstChamps=lstChamps, postEmail=session['email'])
     else:
         return render_template('401.html')
@@ -236,7 +235,6 @@ def freeChampPoll():
 
     if len(newFreeChamps) > 0:
         subject = "Free Champion Notification"
-        flash("New Free Champs!@#!@!#!@")
         g.db = get_db()
         #reset free bool
         g.db.execute("UPDATE CHAMPS SET free = 0")
@@ -246,6 +244,7 @@ def freeChampPoll():
         g.db.commit()
         #get a list of users that have selected champs they want to be notified when they are free
         emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
+        print("updating free champ rotation. \n" + str(len(emails)) + " emails in this update")
         for email in emails:
             freeChampsSelectedByUser = [champ[0] for champ in query_db("""
                 SELECT champs.champ
@@ -258,6 +257,5 @@ def freeChampPoll():
             for champ in freeChampsSelectedByUser:
                 msg += champ + '\n'
             emailLib.sendEmail(email, subject, msg)
-    else:
-        flash("no free champ update necessary")
-    return render_template('login.html')
+
+    return "OK"
