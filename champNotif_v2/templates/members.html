@@ -15,7 +15,8 @@
         $("div.champ").click(function() {
         if( $(this).find('img.nocheck').length > 0) {
             $(this).find('img.nocheck').removeClass("nocheck");
-            $(this).find('img.champ_thumbnail').css("border-color", "#3f96cf");
+           $(this).find('img.champ_thumbnail').addClass("check_champ");
+            //$(this).find('img.champ_thumbnail').css("border-color", "#3f96cf");
             //$("#Msg").html($(this).find("p").text() + " Checked");
 
             $.ajax({
@@ -27,7 +28,8 @@
             });
         } else {
             $(this).find('img.check').addClass("nocheck");
-            $(this).find('img.champ_thumbnail').css("border-color", "#efefef");
+
+            $(this).find('img.champ_thumbnail').removeClass("check_champ");
             //$("#Msg").html($(this).find("p").text() + " Unchecked");
 
             $.ajax({
@@ -42,30 +44,46 @@
     });
 </script>
 
-<h2>member page</h2>
-<div id="champ_box">
-<p>Note: free champs have a green circle</p>
-{% for champInfo in lstChamps: %}
-    {% if champInfo['free'] == 1 %}
-        <div class="champ free">
-    {% else %}
-        <div class="champ">
-    {% endif %}
 
-    {% if champInfo['Selected'] == 'true' %}
-        <img class="check" src="http://i.imgur.com/fA6Z6.png" />
-        <img class="champ_thumbnail free" style='border-color: #3f96cf'
-     src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ champInfo['key'] }}.png" />
-    {% else %}
-        <img class="check nocheck" src="http://i.imgur.com/fA6Z6.png" />
-        <img class="champ_thumbnail"
-     src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ champInfo['key'] }}.png" />
-    {% endif %}
-        <p>{{ champInfo['champ'] }}</p>
+<div class="panel panel-primary" style="margin:20px">
+    <div class="panel-heading">
+        <p>Champions</p>
     </div>
-{% endfor %}
+    <div class="panel-body">
+        <div id="champ_box">
+        {% for champInfo in lstChamps: %}
+            {% if champInfo['free'] == 1 %}
+                <div class="champ free">
+             {% else %}
+                <div class="champ">
+             {% endif %}
+                    {% if champInfo['free'] == 1 %}
+                    <span class="label label-success free">Free</span>
+                    {% endif %}
 
-</div>
+                    {% set cc = "" %}
+
+                    {% if champInfo['Selected'] == 'true' %}
+                        <img class="check" src="http://i.imgur.com/fA6Z6.png" />
+                        {% set cc = cc + "check_champ" %}
+                    {% else %}
+                        <img class="check nocheck" src="http://i.imgur.com/fA6Z6.png" />
+                    {% endif %}
+
+                    {% if champInfo['free'] == 1 %}
+                       {% set cc = cc + " free" %}
+                     {% endif %}
+
+
+                    <img class="{{ cc }} champ_thumbnail" src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ champInfo['key'] }}.png" />
+
+                    <p>{{ champInfo['champ'] }}</p>
+                </div>
+
+            {% endfor %}
+       </div>
+    </div>
+
 
 
 
