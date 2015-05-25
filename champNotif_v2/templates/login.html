@@ -1,19 +1,35 @@
 {% extends "layout.html" %}
 {% block body %}
-  <h2>Login</h2>
-  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-        <form method="post" action="{{ url_for('login') }}">
+  {%if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+
+<div class="panel panel-primary" style="width: 300px; margin: auto">
+    <div class="panel-heading">
+        <p>Free Champ Login</p>
+    </div>
+    <div class="panel-body">
+        <form class='form' method="post" action="{{ url_for('login') }}">
+            <div class='form-group'>
+                <div class='input-group'>
+                    <span class='input-group-addon'><span class='glyphicon glyphicon-user'></span></span>
+                    <input class='form-control' name="email" id="email" value="vandamere@gmail.com"/>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='input-group'>
+                    <span class='input-group-addon'><span class="glyphicon glyphicon-lock"></span></span>
+                    <input class='form-control' type='password' name="pw" id="pw" value="1"/>
+                </div>
+            </div>
+            <div class='form-group'>
+                <button type='submit' class='btn btn-success pull-right' >Login</button>
+            </div>
+        </form>
+    </div>
+    <div class="panel-footer">
+        <p style="width: 100%; text-align: right"> Don't have an account? <a href="{{url_for('register')}}">register</a></p>
+    </div>
+</div>
 
 
-    <dl>
-      <dt>Email:
-      <dd><input type="text" name="email" id="email" value="vandamere@gmail.com">
-      <dt>Password:
-      <dd><input type="password" name="pw" id="pw" value="1">
-      <dd><input type=submit value=Login id="submit"><br>
-          </form>
-      <dt><a href="{{url_for('register')}}">register</a>
 
-    </dl>
-  </form>
 {% endblock %}
