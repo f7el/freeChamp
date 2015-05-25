@@ -18,7 +18,7 @@ class Email:
 
     def addEmail(self, email, password, salt, isVerified):
         t = (email, password, salt, isVerified)
-        g.db.execute('INSERT INTO USERS VALUES (?,?,?,?)',t)
+        g.db.execute('INSERT INTO USERS VALUES (?,?,?,?)', t)
         g.db.commit()
         #newId = cur.lastrowid
 

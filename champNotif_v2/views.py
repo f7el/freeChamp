@@ -7,7 +7,7 @@ from champToken import *
 from security import securePw
 from utility import genRandomString
 from riotApi import getDataDict, getListOfChampDicts
-
+from validate import nameIsValidated
 
 emailLib = Email()
 @app.route('/')
@@ -16,10 +16,6 @@ def index():
 
 @app.route('/login', methods=['POST'])
 def login():
-    error = None
-
-    #postEmail = request.form['varEmail']
-    #postPw = request.form['varPassword']
     postEmail = request.form['email']
     postPw = request.form['pw']
     t = (postEmail,)
@@ -33,7 +29,6 @@ def login():
         else:
             isVerified = False
 
-        print "isVerified: " + str(isVerified)
         if isVerified:
             loginPw = securePw(salt, postPw)
 
@@ -44,16 +39,7 @@ def login():
             else:
                 abort(401)
         else:
-            abort(401)
-
-        if request.form['email'] != None: #FIX ME LATER
-            error = 'invalid login'
-        elif request.form['password'] != None: #FIX ME LATER
-            error = 'invalid login'
-        else:
-            session['logged_in'] = True
-            return redirect(url_for('member_page')) #FIX ME LATER
-    return render_template('login.html', error=error)
+            abort(403)
 
 @app.route('/members')
 def members():
@@ -89,24 +75,21 @@ def verifyEmailForm():
 
 @app.route('/processRegister', methods=['POST'])
 def processRegister():
-    if request.method == 'POST':
-        email = request.form['varEmail']
-        if not emailLib.emailExists(email):
-            pw = request.form['varPassword']
-            salt = genRandomString()
-            #hash(salt + pw)
-            newPw = securePw(salt,pw)
-            isVerified = 0 #false
-            emailLib.addEmail(email, newPw, salt, isVerified)
-            token = genRandomString()
-            emailLib.addVerification(email,token)
-            emailLib.sendVerificationEmail(email,token)
-            return 'OK'
+    email = request.form['varEmail']
+    if not emailLib.emailExists(email):
+        pw = request.form['varPassword']
+        salt = genRandomString()
+        newPw = securePw(salt,pw)
+        isVerified = 0 #false
+        emailLib.addEmail(email, newPw, salt, isVerified)
+        token = genRandomString()
+        emailLib.addVerification(email,token)
+        emailLib.sendVerificationEmail(email,token)
+        return 'OK'
 
-
-        #NEED TO MAKE CUSTOM HANDLER FOR EMAIL ALREADY EXISTS <---------------------------------------------
-        else:
-            abort(400)
+    #NEED TO MAKE CUSTOM HANDLER FOR EMAIL ALREADY EXISTS <---------------------------------------------
+    else:
+        abort(401)
 
 @app.route('/sendAnotherVerification', methods=['GET'])
 def sendAnotherVerification():
@@ -180,26 +163,30 @@ def checkForNewChamps():
 @app.route('/champUnselected', methods=['POST'])
 def champUnselected():
     if 'logged_in' in session:
-        email = request.form['varUser']
+        email = session['email']
         champName = request.form['varChampName']
-        t = (email, champName)
-        g.db = get_db()
-        g.db.execute("DELETE FROM NOTIFY WHERE email=(?) and champ=(?)", t)
-        g.db.commit()
-        return 'OK'
+        if nameIsValidated(champName):
+            t = (email, champName)
+            g.db = get_db()
+            g.db.execute("DELETE FROM NOTIFY WHERE email=(?) and champ=(?)", t)
+            g.db.commit()
+            return 'OK'
+        else:
+            abort(400)
     abort(401)
 
 @app.route('/champSelected', methods=['POST'])
 def champSelected():
     if 'logged_in' in session:
-
         champName = request.form['varChampName']
-
-        t = (request.form['varChampName'], session['email'])
-        g.db = get_db()
-        g.db.execute("INSERT INTO NOTIFY VALUES (?,?)", t)
-        g.db.commit()
-        return 'OK'
+        if nameIsValidated(champName):
+            t = (champName, session['email'])
+            g.db = get_db()
+            g.db.execute("INSERT INTO NOTIFY (champ, email) VALUES (?,?)", t)
+            g.db.commit()
+            return 'OK'
+        else:
+           abort(400)
     abort(401)
 
 @app.route('/unauthorized', methods=['GET'])
