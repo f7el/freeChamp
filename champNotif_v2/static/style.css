@@ -19,7 +19,7 @@ div#champ_box div.champ img.champ_thumbnail {
 	height: 50px;
 	margin: 15px auto 3px;
 	display: block;
-	border: 3px solid #efefef;
+	/*border: 3px solid #efefef;*/
 }
 
 div#champ_box div.champ img.nocheck {
@@ -53,3 +53,6 @@ div#champ_box img.free {
      border: green 2px solid
  }
 
+.check_champ {
+    border: #3f96cf 3px solid
+}
