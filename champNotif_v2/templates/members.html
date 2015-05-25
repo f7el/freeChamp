@@ -52,26 +52,31 @@
         <div id="champ_box">
         <p>Note: free champs have a green circle</p>
         {% for champInfo in lstChamps: %}
-        {% if champInfo['free'] == 1 %}
-            <div class="champ free">
-                {% else %}
+            {% if champInfo['free'] == 1 %}
+                <div class="champ free">
+             {% else %}
                 <div class="champ">
+             {% endif %}
+                    {% if champInfo['free'] == 1 %}
+                    <span class="label label-success free">Free</span>
                     {% endif %}
 
                     {% if champInfo['Selected'] == 'true' %}
                     <img class="check" src="http://i.imgur.com/fA6Z6.png" />
-                    <img class="champ_thumbnail free" style='border-color: #3f96cf'
-                         src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ champInfo['key'] }}.png" />
                     {% else %}
                     <img class="check nocheck" src="http://i.imgur.com/fA6Z6.png" />
-                    <img class="champ_thumbnail"
-                         src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ champInfo['key'] }}.png" />
+                    {% endif %}
+
+                    {% if champInfo['free'] == 1 %}
+                     <img class="champ_thumbnail free" src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ champInfo['key'] }}.png" />
+                     {% else %}
+                    <img class="champ_thumbnail" src="http://ddragon.leagueoflegends.com/cdn/5.9.1/img/champion/{{ champInfo['key'] }}.png" />
                     {% endif %}
                     <p>{{ champInfo['champ'] }}</p>
                 </div>
+
             {% endfor %}
-            </div>
-        </div>
+       </div>
     </div>
 
 
