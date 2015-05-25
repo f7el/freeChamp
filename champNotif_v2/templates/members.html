@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
 <script>
-    window.UserEmail = "{{ postEmail }}";
     $( document ).ready(function() {
          $.ajax({
                 type: "POST",
@@ -22,7 +21,7 @@
             $.ajax({
                 type: "POST",
                 url: "/champSelected",
-                data:  {varUser: window.UserEmail, varChampName: $(this).find("p").text()},
+                data:  {varChampName: $(this).find("p").text()},
                 success: function(data) {
                 }
             });
@@ -34,7 +33,7 @@
             $.ajax({
                 type: "POST",
                 url: "/champUnselected",
-                data:  {varUser: window.UserEmail, varChampName: $(this).find("p").text()},
+                data:  {varChampName: $(this).find("p").text()},
                 success: function(data) {
                 }
             });

@@ -192,9 +192,10 @@ def champUnselected():
 @app.route('/champSelected', methods=['POST'])
 def champSelected():
     if 'logged_in' in session:
-        email = request.form['varUser']
+
         champName = request.form['varChampName']
-        t = (champName, email)
+
+        t = (request.form['varChampName'], session['email'])
         g.db = get_db()
         g.db.execute("INSERT INTO NOTIFY VALUES (?,?)", t)
         g.db.commit()
@@ -252,7 +253,7 @@ def freeChampPoll():
                 JOIN notify ON champs.champ = notify.champ
                 where notify.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
 
-            msg = "Hello from Free Champ! Below are a list of champs that you wish to be notified when they are free: \n"
+            msg = "Hello from Free Champ! You wished to be notified when the below champs are free: \n"
 
             for champ in freeChampsSelectedByUser:
                 msg += champ + '\n'
