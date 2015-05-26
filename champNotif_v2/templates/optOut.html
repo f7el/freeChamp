@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block body %}
+<script>
+$(document).ready(function(){
+    $("#cancel").click(function(){
+        window.location = '/';
+    });//end cancel click
+});//end doc ready
+</script>
+<h2>Opt-Out</h2>
+By selecting, opt-out, you will not receive any more notifications. <br/> <br/>
+
+<form action="{{ url_for('processOptout') }}" method=get>
+<button type="submit" value="yes">opt-out</button> &nbsp&nbsp
+<button type="button" value="no" id="cancel">cancel</button>
+</form>
+{% endblock %}

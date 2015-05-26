@@ -244,6 +244,21 @@ def freeChampPoll():
 
             for champ in freeChampsSelectedByUser:
                 msg += champ + '\n'
+            msg += "\n\n <a href=" + app.config['SERVER_NAME'] + "/optOut>opt-out</a>"
             emailLib.sendEmail(email, subject, msg)
 
     return "OK"
+
+@app.route('/optOut', methods=['GET'])
+def optOut():
+    return render_template('optOut.html')
+
+#removes all notify entries for a given email
+@app.route('/processOptout', methods=['GET'])
+def processOptout():
+    email = session['email']
+    t = (email,)
+    g.db = get_db()
+    g.db.execute('DELETE FROM notify WHERE email=(?)', t)
+    flash("You will no longer receive notifications")
+    return render_template('optOut.html')
