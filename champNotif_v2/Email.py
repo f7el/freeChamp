@@ -68,7 +68,6 @@ class Email:
     def sendEmail(self, toEmail, subject, body):
         notificationEmail = app.config['NOTIFICATIONEMAIL']
         emailPw = app.config['EMAILPW']
-        server = app.config['SERVER']
         server = smtplib.SMTP('smtp.gmail.com',587)
         server.starttls()
         server.login(notificationEmail, emailPw)
@@ -125,4 +124,3 @@ class Email:
                     return False
         else:
             return False
-

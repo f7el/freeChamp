@@ -16,9 +16,10 @@ def index():
 
 @app.route('/login', methods=['POST'])
 def login():
-    postEmail = request.form['email']
-    postPw = request.form['pw']
+    postEmail = request.form['varEmail']
+    postPw = request.form['varPassword']
     t = (postEmail,)
+    print("checking if email exists...")
     if emailLib.emailExists(postEmail):
         result = query_db('SELECT email, password, salt, isVerified FROM users WHERE email=?', t)
         resultList = result[0]
@@ -40,6 +41,8 @@ def login():
                 abort(401)
         else:
             abort(403)
+    else:
+        abort(401)
 
 @app.route('/members')
 def members():
@@ -211,6 +214,29 @@ def query():
                                 ORDER BY champs.champ;""")
     print lstChamps[0]['champ'] + lstChamps[0]['key'] + lstChamps[0]['Selected']
 
+@app.route('/freeChampPollTest')
+def freeChampPollTest():
+    subject = "Free Champion Notification"
+    emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
+    print emails
+    for email in emails:
+        freeChampsSelectedByUser = [champ[0] for champ in query_db("""
+            SELECT champs.champ
+            FROM CHAMPS
+            JOIN notify ON champs.champ = notify.champ
+            where notify.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
+
+        msg = "Hello from Free Champ! You wished to be notified when the below champs are free: \n"
+
+        for champ in freeChampsSelectedByUser:
+            msg += champ + '\n'
+        msg += "\n\n opt-out: 'http://" + app.config['HOST'] + ":" + str(app.config['PORT']) + "/optOut"
+        print msg
+        emailLib.sendEmail(email, subject, msg)
+
+    return "OK"
+
+
 @app.route('/freeChampPoll')
 def freeChampPoll():
     champs = getListOfChampDicts()
@@ -244,7 +270,7 @@ def freeChampPoll():
 
             for champ in freeChampsSelectedByUser:
                 msg += champ + '\n'
-            msg += "\n\n <a href=" + app.config['SERVER_NAME'] + "/optOut>opt-out</a>"
+            msg += "\n\n <a href=http://" + app.config['HOST'] + ":" + app.config['PORT'] + "/optOut>opt-out</a>"
             emailLib.sendEmail(email, subject, msg)
 
     return "OK"
@@ -260,5 +286,7 @@ def processOptout():
     t = (email,)
     g.db = get_db()
     g.db.execute('DELETE FROM notify WHERE email=(?)', t)
+    g.db.commit()
     flash("You will no longer receive notifications")
     return render_template('optOut.html')
+
