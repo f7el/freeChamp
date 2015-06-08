@@ -10,7 +10,8 @@ $("#myform").submit(function(e){
       data: { varEmail: email, varPassword: pw},
       success: function(data, textStatus, jqXHR)
       {
-          alert("email verification sent");
+          $.getScript("/static/scripts/server.js", function(){
+          window.location = devServer.concat('/members'); });
 
 
       },
@@ -19,8 +20,10 @@ $("#myform").submit(function(e){
             var status = jqXHR.status;
             if (status == "401"){
                 $("#401").show();
+                $("#pw").val('');
             } else if (status == "403"){
                 $("#403").show();
+                $("#pw").val('');
             }
 
 

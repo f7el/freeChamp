@@ -19,7 +19,6 @@ def login():
     postEmail = request.form['varEmail']
     postPw = request.form['varPassword']
     t = (postEmail,)
-    print("checking if email exists...")
     if emailLib.emailExists(postEmail):
         result = query_db('SELECT email, password, salt, isVerified FROM users WHERE email=?', t)
         resultList = result[0]
@@ -227,12 +226,23 @@ def freeChampPollTest():
             where notify.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
 
         msg = "Hello from Free Champ! You wished to be notified when the below champs are free: \n"
-
+        htmlChamps = ""
         for champ in freeChampsSelectedByUser:
             msg += champ + '\n'
-        msg += "\n\n opt-out: 'http://" + app.config['HOST'] + ":" + str(app.config['PORT']) + "/optOut"
-        print msg
-        emailLib.sendEmail(email, subject, msg)
+            htmlChamps += champ + '\n'
+        token = getToken(email)
+        url = "http://" + app.config['HOST'] + ":" + str(app.config['PORT']) + "/optOut?token=" + token
+        msg += "\n\n" + url
+
+        #HTML version
+        htmlMsg = """<html>
+        <p>Hello from Free Champ! You wished to be notified when the below champs are free: \n</p>""" + htmlChamps \
+        +  "<br><br><a href=" + url + ">Opt-Out</a> </html>"
+
+
+
+
+        emailLib.sendEmail(email, subject, msg, htmlMsg)
 
     return "OK"
 
@@ -248,30 +258,7 @@ def freeChampPoll():
     newFreeChamps = list(set(apiIds) - set(dbIds))
 
     if len(newFreeChamps) > 0:
-        subject = "Free Champion Notification"
-        g.db = get_db()
-        #reset free bool
-        g.db.execute("UPDATE CHAMPS SET free = 0")
-        #for each champ id in the api call, show that champ as free in the db
-        for champId in apiIds:
-             g.db.execute("UPDATE Champs SET free = 1 WHERE id = (?)", (champId,))
-        g.db.commit()
-        #get a list of users that have selected champs they want to be notified when they are free
-        emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
-        print("updating free champ rotation. \n" + str(len(emails)) + " emails in this update")
-        for email in emails:
-            freeChampsSelectedByUser = [champ[0] for champ in query_db("""
-                SELECT champs.champ
-                FROM CHAMPS
-                JOIN notify ON champs.champ = notify.champ
-                where notify.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
-
-            msg = "Hello from Free Champ! You wished to be notified when the below champs are free: \n"
-
-            for champ in freeChampsSelectedByUser:
-                msg += champ + '\n'
-            msg += "\n\n <a href=http://" + app.config['HOST'] + ":" + app.config['PORT'] + "/optOut>opt-out</a>"
-            emailLib.sendEmail(email, subject, msg)
+        emailLib.sendChampNotifEmail(apiIds)
 
     return "OK"
 

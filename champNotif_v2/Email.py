@@ -7,6 +7,7 @@ from database import get_db,query_db
 from champToken import *
 from info import *
 
+from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 class Email:
@@ -65,21 +66,55 @@ class Email:
         finally:
             server.quit()
 
-    def sendEmail(self, toEmail, subject, body):
+    def sendEmail(self, toEmail, subject, body, html):
         notificationEmail = app.config['NOTIFICATIONEMAIL']
         emailPw = app.config['EMAILPW']
         server = smtplib.SMTP('smtp.gmail.com',587)
         server.starttls()
         server.login(notificationEmail, emailPw)
 
-        msg = MIMEText(body)
+        msg = MIMEMultipart('alternative')
+        # Create the body of the message (a plain-text and an HTML version).
+        text = body
         msg['To'] = toEmail
         msg['From'] = notificationEmail
         msg['Subject'] = subject
+        part1 = MIMEText(text, 'plain')
+        part2 = MIMEText(html, 'html')
+        msg.attach(part1)
+        msg.attach(part2)
+        email_text =  msg.as_string()
         try:
-            server.sendmail(notificationEmail, toEmail, msg.as_string())
+            server.sendmail(notificationEmail, toEmail, email_text)
         finally:
             server.quit()
+
+    def sendChampNotifEmail(self, apiIds):
+        subject = "Free Champion Notification"
+        g.db = get_db()
+        #reset free bool
+        g.db.execute("UPDATE CHAMPS SET free = 0")
+        #for each champ id in the api call, show that champ as free in the db
+        for champId in apiIds:
+             g.db.execute("UPDATE Champs SET free = 1 WHERE id = (?)", (champId,))
+        g.db.commit()
+        #get a list of users that have selected champs they want to be notified when they are free
+        emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
+        print("updating free champ rotation. \n" + str(len(emails)) + " emails in this update")
+        for email in emails:
+            freeChampsSelectedByUser = [champ[0] for champ in query_db("""
+                SELECT champs.champ
+                FROM CHAMPS
+                JOIN notify ON champs.champ = notify.champ
+                where notify.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
+
+            msg = "Hello from Free Champ! You wished to be notified when the below champs are free: \n"
+
+            for champ in freeChampsSelectedByUser:
+                msg += champ + '\n'
+            token = getToken(email)
+            msg += "\n\n <a href=http://" + app.config['HOST'] + ":" + app.config['PORT'] + "/optOut>opt-out?token=" + token + "</a>"
+            self.sendEmail(email, subject, msg)
 
     def resetVerificationCount(self, email):
         g.db = get_db()

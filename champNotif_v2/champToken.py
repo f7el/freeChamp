@@ -5,7 +5,7 @@ from utility import genRandomString
 
 
    #helper method to get a token for a given email
-def _getToken(self, email):
+def getToken(email):
     t = (email,)
     (token,) = query_db('SELECT token FROM verification WHERE email=?', t, one=True)
     return token
@@ -23,7 +23,7 @@ def tokenIsAlive(self,token):
 def genNewToken(self,email):
     g.db = get_db()
     newToken = self.genRandomString()
-    token = self._getToken(email)
+    token = self.getToken(email)
     t = (newToken,token)
     g.db.execute('UPDATE verification SET token=?, timestamp=datetime("now","localtime") WHERE token=?', t)
     g.db.commit()
