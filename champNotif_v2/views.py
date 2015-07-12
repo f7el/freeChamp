@@ -6,8 +6,9 @@ from Email import *
 from champToken import *
 from security import securePw
 from utility import genRandomString
-from riotApi import getDataDict, getListOfChampDicts
+from riotApi import *
 from validate import nameIsValidated
+import logging
 
 emailLib = Email()
 @app.route('/')
@@ -137,30 +138,46 @@ def insertChamps():
     flash("success")
     return render_template('admin.html')
 
+#returns true if new champs were added
 @app.route('/checkForNewChamps', methods=['GET'])
 def checkForNewChamps():
-    champs = [champ[0] for champ in query_db("select champ from champs")]
+    logging.basicConfig(filename='freeChampEvents.log',format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',
+    level=logging.INFO)
+    dbKeys = [champ[0] for champ in query_db("select key from champs")]
     dataDic = getDataDict()
 
     #get champ keys
     keys = dataDic.keys()
-    apiNames = []
+    #apiNames = []
+    apiKeys = []
     for key in keys:
+
         champ = dataDic[key]
-        apiNames.append(champ['name'])
+        #apiNames.append(champ['name'])
+        apiKeys.append(champ['key'])
     #subract the latest champ set from the database set. the difference are new champs
-    newChamps = list(set(apiNames) - set(champs))
+    #newChamps = list(set(apiNames) - set(champs)
+    newChampKeys = list(set(apiKeys) - set(dbKeys))
     #add the new champs to the database
-    if len(newChamps) > 0:
+    if len(newChampKeys) > 0:
         g.db = get_db()
-        for champ in newChamps:
-            t = (champ,)
-            g.db.execute("INSERT INTO CHAMPS VALUES (?)", t)
+        for key in newChampKeys:
+            #get id of champ
+            champData = dataDic[key]
+            name = champData['name']
+            logging.info('adding %s to the champs db', name)
+            id = champData['id']
+            freeData = getChampInfoById(id)
+            if freeData['freeToPlay'] == False:
+                isFree = 0
+            else:
+                isFree = 1
+
+            t = (name, key, isFree, id)
+            g.db.execute("INSERT INTO CHAMPS VALUES (?, ?, ?, ?)", t)
         g.db.commit()
-        flash ("champ db has been updated")
-    else:
-        flash("champ database up-to-date")
-    return render_template('admin.html')
+        return "True"
+    return "False"
 
 @app.route('/champUnselected', methods=['POST'])
 def champUnselected():
@@ -246,7 +263,7 @@ def freeChampPollTest():
 
     return "OK"
 
-
+ #determines if a free champ rotation has occured; if so, send an email to the appropriate users
 @app.route('/freeChampPoll')
 def freeChampPoll():
     champs = getListOfChampDicts()

@@ -6,6 +6,7 @@ import sqlite3, os, hashlib, smtplib
 from database import get_db,query_db
 from champToken import *
 from info import *
+import logging
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -90,6 +91,8 @@ class Email:
             server.quit()
 
     def sendChampNotifEmail(self, apiIds):
+        logging.basicConfig(filename='freeChampEvents.log',format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',
+    level=logging.INFO)
         subject = "Free Champion Notification"
         g.db = get_db()
         #reset free bool
@@ -100,6 +103,8 @@ class Email:
         g.db.commit()
         #get a list of users that have selected champs they want to be notified when they are free
         emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
+        emailNum = len(emails)
+        logging.info("sending " + emailNum + "notification emails")
         print("updating free champ rotation. \n" + str(len(emails)) + " emails in this update")
         for email in emails:
             freeChampsSelectedByUser = [champ[0] for champ in query_db("""

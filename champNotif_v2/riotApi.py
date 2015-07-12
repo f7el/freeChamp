@@ -12,21 +12,29 @@ champVer = "v1.2"
 lolStaticData = "/api/lol/static-data/na/" + staticDataVer + "/champion?api_key=" + api_key
 champion = "/api/lol/na/" + champVer + "/champion?api_key=" + api_key
 
+#has key
 def getDataDict():
     url = "https://" + globalEndpoint + lolStaticData
     r = requests.get(url)
     jObj = r.json()
     return jObj['data']
 
+#has free attribute
 def getListOfChampDicts():
     champApiUrl = "https://" + naEndpoint + champion
     r = requests.get(champApiUrl)
     jObj = r.json()
     return jObj['champions']
 
+def getChampInfoById(id):
+    champApiUrl = "https://" + naEndpoint + "/api/lol/na/" + champVer + "/champion/" + str(id) + "?api_key=" + api_key
+    r = requests.get(champApiUrl)
+    return r.json()
+
+
 #could get 500 response
 def getChampById(id):
-    response = requests.get("https://global.api.pvp.net/api/lol/static-data/na/" + staticDataVer +"/champion/" + id + "?api_key=" + api_key)
+    response = requests.get("https://" + naEndpoint + "/api/lol/na/" + champVer + "/champion/" + str(id) + "?api_key=" + api_key)
     dict = response.json()
     return dict['name']
 
@@ -46,6 +54,8 @@ def getListOfChamps():
 
 
 def main():
-        return None
+    data = getChampInfoById(133)
+    print data
 if __name__ == "__main__":
+
     main()
