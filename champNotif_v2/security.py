@@ -1,7 +1,6 @@
 __author__ = 'S70rmCrow'
-import os, hashlib
+import hashlib, binascii
 
 def securePw(salt, pw):
-    hash = hashlib.sha512()
-    hash.update(salt + pw)
-    return hash.hexdigest()
+    dk = hashlib.pbkdf2_hmac('sha512', pw, salt, 100000)
+    return binascii.hexlify(dk)
