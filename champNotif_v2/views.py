@@ -9,6 +9,9 @@ from utility import genRandomString
 from riotApi import *
 from validate import nameIsValidated
 import logging
+import gResponse
+
+
 
 emailLib = Email()
 @app.route('/')
@@ -19,30 +22,37 @@ def index():
 def login():
     postEmail = request.form['varEmail']
     postPw = request.form['varPassword']
-    t = (postEmail,)
-    if emailLib.emailExists(postEmail):
-        result = query_db('SELECT email, password, salt, isVerified FROM users WHERE email=?', t)
-        resultList = result[0]
-        email, hashedPw, salt, isVerified = resultList
+    postGresponse = request.form['varGresponse']
 
-        if isVerified == 1:
-            isVerified = True
-        else:
-            isVerified = False
+    #check if the captcha was successful
+    if gResponse.isVerified(postGresponse):
+        t = (postEmail,)
+        if emailLib.emailExists(postEmail):
+            result = query_db('SELECT email, password, salt, isVerified FROM users WHERE email=?', t)
+            resultList = result[0]
+            email, hashedPw, salt, isVerified = resultList
 
-        if isVerified:
-            loginPw = securePw(salt, postPw)
-
-            if loginPw == hashedPw:
-                session['logged_in'] = True
-                session['email'] = postEmail
-                return redirect(url_for('members'))
+            if isVerified == 1:
+                isVerified = True
             else:
-                abort(401)
+                isVerified = False
+
+            if isVerified:
+                loginPw = securePw(salt, postPw)
+
+                if loginPw == hashedPw:
+                    session['logged_in'] = True
+                    session['email'] = postEmail
+
+                    return redirect(url_for('members'))
+                else:
+                    abort(401)
+            else:
+                abort(403)
         else:
-            abort(403)
+            abort(401)
     else:
-        abort(401)
+        return 'Invalid captcha', 401
 
 @app.route('/members')
 def members():

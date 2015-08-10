@@ -104,7 +104,7 @@ class Email:
         #get a list of users that have selected champs they want to be notified when they are free
         emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
         emailNum = len(emails)
-        logging.info("sending " + emailNum + "notification emails")
+        logging.info("sending " + str(emailNum) + "notification emails")
         print("updating free champ rotation. \n" + str(len(emails)) + " emails in this update")
         for email in emails:
             freeChampsSelectedByUser = [champ[0] for champ in query_db("""

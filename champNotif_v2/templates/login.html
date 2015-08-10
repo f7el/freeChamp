@@ -4,7 +4,7 @@
   url_for('static', filename='scripts/login.js') }}"></script>
   {%if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
 
-<div class="panel panel-primary" style="width: 300px; margin: auto">
+<div class="panel panel-primary" style="width: 350px; margin: auto">
     <div class="panel-heading">
         <p>Free Champ Login</p>
     </div>
@@ -24,10 +24,16 @@
                 </div>
             </div>
             <div class='form-group'>
+                    <div class="g-recaptcha checkbox" data-sitekey="6LcX-woTAAAAANEV5MYjmrcj6N4KFd09LSZn0r4w"></div>
+            </div>
+            <div class='form-group'>
                 <button type="submit" id="submit" class='btn btn-success pull-right' >Login</button>
                 <font color="red" class="error" id="401">Unauthorized</font>
                 <font color="red" class="error" id="403">Email not verified</font>
+                <font color="red" class="error" id="captcha">Please check the captcha box</font>
+
             </div>
+
         </form>
     </div>
 
