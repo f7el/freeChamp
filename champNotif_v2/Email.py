@@ -52,12 +52,11 @@ class Email:
     def sendVerificationEmail(self, email, token):
         notificationEmail = app.config['NOTIFICATIONEMAIL']
         emailPw = app.config['EMAILPW']
-        server = app.config['SERVER']
         server = smtplib.SMTP('smtp.gmail.com',587)
         server.starttls()
         server.login(notificationEmail, emailPw)
 
-        msg = MIMEText("Click the link to confirm your e-mail \n\n" + "http://" + str(app.config['SERVER']) + \
+        msg = MIMEText("Click the link to confirm your e-mail \n\n" + "http://freechamp.sonyar.info:9090" + \
                        "/verifyEmail?token="+token)
         msg['To'] = email
         msg['From'] =notificationEmail

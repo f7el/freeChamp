@@ -2,5 +2,6 @@ champNotif_v2/info.py
 *.pyc
 .idea/*
 *.iml
+*.swp
 
 
