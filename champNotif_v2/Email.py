@@ -37,7 +37,7 @@ class Email:
 
     def emailExists(self, email):
         t = (email,)
-        result = query_db('SELECT COUNT(email) FROM USERS WHERE email=(?)',t,one=True)
+        result = query_db('SELECT COUNT(email) FROM USERS WHERE email=(?)', t, one=True)
         count = result[0]
         if count > 0:
             return True

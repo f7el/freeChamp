@@ -1,4 +1,6 @@
 __author__ = 'Paul'
+#takes 2 arguments to call either the rotate or newChamp endpoints
+#param One: rotate or param two: newChamp - (case-insensitive)
 from sys import argv
 from champNotif_v2 import app
 import re

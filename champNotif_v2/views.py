@@ -92,7 +92,7 @@ def processRegister():
     if not emailLib.emailExists(email):
         pw = request.form['varPassword']
         salt = genRandomString()
-        newPw = securePw(salt,pw)
+        newPw = securePw(salt, pw)
         isVerified = 0 #false
         emailLib.addEmail(email, newPw, salt, isVerified)
         token = genRandomString()
