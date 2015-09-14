@@ -2,23 +2,38 @@
 {% block body %}
 <script type=text/javascript src="{{
   url_for('static', filename='scripts/register.js') }}"></script>
-  <h2>Register</h2>
   {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-  <!--<form action="{{ url_for('processRegister') }}" method=post>-->
-    <dl>
-      <dt>email:
-      <dd><input type="text" name="email" id="email" value="vandamere@gmail.com">
-      <div id="emailBlank" class="error"><font color="red">email cannot be blank</font></div>
-      <div id="emailFormat" class="error"><font color="red">invalid email format</font></div>
-      <dt>Password:
-      <dd><input type="password" name="password" id="password" value="1">
-      <div id="pwBlank" class="error"><font color="red">password cannot be blank</font></div>
-      <dt>Enter password again:
-      <dd><input type="password" name="password2" id="password2" value="1">
-      <div id="pw2Blank" class="error"><font color="red">verify password field cannot be blank</font></div>
-      <div id="pwMismatch" class="error"><font color="red">passwords do not match</font></div>
-      <dd><input type="submit" value="submit" id="submit"><br><br>
-    </dl>
-  <!--</form>-->
-  <a href="{{ url_for('verifyEmailForm') }}">resend verification email</a>
+<div class="panel panel-primary" style="width: 350px; margin: auto">
+<div class="panel-heading">
+    <p>Register</p>
+</div>
+    <div class="panel-body">
+        <div class="form-group">
+            <div class='input-group'>
+                <span class='input-group-addon'><span class='glyphicon glyphicon-user'></span></span>
+                <input class='form-control' type="email" name="email" id="email" placeholder="Email Address" required pattern="^[a-zA-Z0-9+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$"/>
+            </div>
+        </div>
+         <div class='form-group'>
+                <div class='input-group'>
+                    <span class='input-group-addon'><span class="glyphicon glyphicon-lock"></span></span>
+                    <input class='form-control' type='password' name="password" id="password" value="1" placeholder="Password" required/>
+                </div>
+            </div>
+        <div class='form-group'>
+                <div class='input-group'>
+                    <span class='input-group-addon'><span class="glyphicon glyphicon-lock"></span></span>
+                    <input class='form-control' type='password' name="password2" id="password2" value="1" placeholder="Enter password again" required/>
+                </div>
+            </div>
+
+
+
+          <div id="pwMismatch" class="error"><font color="red">passwords do not match</font></div>
+          <input type="submit" value="submit" id="submit"><br><br>
+
+
+      <a href="{{ url_for('verifyEmailForm') }}">resend verification email</a>
+    </div>
+</div>
 {% endblock %}

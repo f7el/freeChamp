@@ -97,8 +97,11 @@ def processRegister():
         emailLib.addEmail(email, newPw, salt, isVerified)
         token = genRandomString()
         emailLib.addVerification(email,token)
-        emailLib.sendVerificationEmail(email,token)
-        return 'OK'
+        result = emailLib.sendVerificationEmail(email,token)
+        if result == True:
+            return 'OK'
+        else:
+            return 500
 
     #NEED TO MAKE CUSTOM HANDLER FOR EMAIL ALREADY EXISTS <---------------------------------------------
     else:

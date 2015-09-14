@@ -44,9 +44,16 @@ $(document).ready(function(){
 
 
                   },
-                  error: function(data,textStatus)
+                  error: function(data,textStatus, jqXHR)
                   {
-                        alert("This email already exists.");
+
+                        var status = jqXHR.status;
+                        if (jqXHR == "INTERNAL SERVER ERROR"){
+                            alert("server error");
+                        }
+                        else if (status == "401"){
+                            alert("This email already exists.");
+                        }
 
                   },
                 });//ajax call

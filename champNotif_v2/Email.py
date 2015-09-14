@@ -6,7 +6,10 @@ import sqlite3, os, hashlib, smtplib
 from database import get_db,query_db
 from champToken import *
 from info import *
+from logging import FileHandler
+from logging import Formatter
 import logging
+
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -49,12 +52,20 @@ class Email:
         g.db.execute('UPDATE USERS SET isVerified=1 WHERE email=?',t)
         g.db.commit()
 
+    #return true if success. else return false
     def sendVerificationEmail(self, email, token):
         notificationEmail = app.config['NOTIFICATIONEMAIL']
         emailPw = app.config['EMAILPW']
         server = smtplib.SMTP('smtp.gmail.com',587)
         server.starttls()
-        server.login(notificationEmail, emailPw)
+        try:
+            server.login(notificationEmail, emailPw)
+        except smtplib.SMTPAuthenticationError as e:
+           logging.basicConfig(filename='freeChampError.log',format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',
+           level=logging.ERROR)
+           logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+           server.quit()
+           return False
 
         msg = MIMEText("Click the link to confirm your e-mail \n\n" + "http://freechamp.sonyar.info:9090" + \
                        "/verifyEmail?token="+token)
@@ -65,6 +76,7 @@ class Email:
             server.sendmail(notificationEmail, email, msg.as_string())
         finally:
             server.quit()
+            return True
 
     def sendEmail(self, toEmail, subject, body, html):
         notificationEmail = app.config['NOTIFICATIONEMAIL']
@@ -110,7 +122,7 @@ class Email:
                 SELECT champs.champ
                 FROM CHAMPS
                 JOIN notify ON champs.champ = notify.champ
-                where notify.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
+                where noti fy.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
 
             msg = "Hello from Free Champ! You wished to be notified when the below champs are free: \n"
 
