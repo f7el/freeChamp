@@ -307,3 +307,10 @@ def processOptout():
     flash("You will no longer receive notifications")
     return render_template('optOut.html')
 
+@app.route('/resetPassword', methods=['GET'])
+def resetPassword():
+    return render_template('resetPassword.html')
+
+@app.route('/processResetPassword', methods=['GET'])
+def processResetPassword():
+    email = request.args['email']
