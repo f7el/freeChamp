@@ -7,7 +7,7 @@ from champToken import *
 from security import securePw
 from utility import genRandomString
 from riotApi import *
-from validate import nameIsValidated
+from validate import *
 import logging
 import gResponse
 
@@ -314,3 +314,8 @@ def resetPassword():
 @app.route('/processResetPassword', methods=['GET'])
 def processResetPassword():
     email = request.args['email']
+    if emailIsValid(email):
+        if emailLib.emailExists(email):
+            pass
+
+

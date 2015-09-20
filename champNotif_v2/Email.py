@@ -61,11 +61,7 @@ class Email:
         try:
             server.login(notificationEmail, emailPw)
         except smtplib.SMTPAuthenticationError as e:
-           logging.basicConfig(filename='freeChampError.log',format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',
-           level=logging.ERROR)
-           logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
-           server.quit()
-           return False
+            runSMTPAuthExceptionCode(server, e)
 
         msg = MIMEText("Click the link to confirm your e-mail \n\n" + "http://freechamp.sonyar.info:9090" + \
                        "/verifyEmail?token="+token)
@@ -83,7 +79,11 @@ class Email:
         emailPw = app.config['EMAILPW']
         server = smtplib.SMTP('smtp.gmail.com',587)
         server.starttls()
-        server.login(notificationEmail, emailPw)
+        try:
+            server.login(notificationEmail, emailPw)
+        except smtplib.SMTPAuthenticationError as e:
+            runSMTPAuthExceptionCode(server, e)
+
 
         msg = MIMEMultipart('alternative')
         # Create the body of the message (a plain-text and an HTML version).
@@ -175,3 +175,10 @@ class Email:
                     return False
         else:
             return False
+
+def runSMTPAuthExceptionCode(server, e):
+    logging.basicConfig(filename='freeChampError.log',format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',
+    level=logging.ERROR)
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+    server.quit()
+    return False
