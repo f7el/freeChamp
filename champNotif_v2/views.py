@@ -314,8 +314,9 @@ def resetPassword():
 @app.route('/processResetPassword', methods=['GET'])
 def processResetPassword():
     email = request.args['email']
+    httpGetToken = requests.args['token']
     if emailIsValid(email):
         if emailLib.emailExists(email):
-            pass
+
 
 

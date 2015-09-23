@@ -74,6 +74,24 @@ class Email:
             server.quit()
             return True
 
+    def sendForgotPassword(self, email):
+        dbToken = getEmailFromToken(email)
+        url = "http://" + app.config['HOST'] + "/processResetPassword?email=" + email + "?token=" + dbToken
+        htmlMsg = """"
+        <html>
+        <header></header>
+        <body>
+          <p>Hello from freeChamp! Click <a href=""""" + url + ">here</a> to reset your password</body></html>"
+
+
+
+        plainMsg = "Hello from freeChamp! Click the following link to reset your password: http://" + app.config['HOST'] + \
+        "/process"
+
+
+        subject = "freeChamp password reset"
+        self.sendEmail(email, subject, plainMsg, htmlMsg)
+
     def sendEmail(self, toEmail, subject, body, html):
         notificationEmail = app.config['NOTIFICATIONEMAIL']
         emailPw = app.config['EMAILPW']
