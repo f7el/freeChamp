@@ -29,12 +29,23 @@ def genNewToken(self,email):
     g.db.commit()
     return newToken
 
-def tokenExists(email):
-    t = (email,)
+def tokenExists(token):
+    t = (token,)
     (exists,) = query_db("SELECT COUNT(token) FROM VERIFICATION WHERE token=?", t, one=True)
     return exists == 1
 
+#returns None if token does not exist
 def getEmailFromToken(token):
     t = (token,)
-    (email,) = query_db("SELECT email FROM VERIFICATION WHERE token=?",t,one=True)
+    try:
+        (email,) = query_db("SELECT email FROM VERIFICATION WHERE token=?",t,one=True)
+    except TypeError:
+        return None
+
     return email
+
+def tokensMatch(tokenA, tokenB):
+    if tokenA == tokenB:
+        return True
+    else:
+        return False

@@ -311,12 +311,28 @@ def processOptout():
 def resetPassword():
     return render_template('resetPassword.html')
 
+@app.route('/sendResetPassword', methods=['GET'])
+def sendResetPassword():
+    email = request.args['varEmail']
+    if emailIsValid(email):
+        if emailLib.emailExists(email):
+           emailSent = emailLib.sendForgotPassword(email)
+    if emailSent:
+        return 'OK'
+    else:
+        abort(500)
+
 @app.route('/processResetPassword', methods=['GET'])
 def processResetPassword():
-    email = request.args['email']
+    email = request.args['varEmail']
     httpGetToken = requests.args['token']
     if emailIsValid(email):
         if emailLib.emailExists(email):
+            dbToken = getToken(email)
+            if tokensMatch(httpGetToken, dbToken):
+                session['allow'] = True
+                render_template('newPassword.html')
+
 
 
 

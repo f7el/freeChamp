@@ -72,10 +72,9 @@ class Email:
             server.sendmail(notificationEmail, email, msg.as_string())
         finally:
             server.quit()
-            return True
-
+    #return false if email failed to send
     def sendForgotPassword(self, email):
-        dbToken = getEmailFromToken(email)
+        dbToken = getToken(email)
         url = "http://" + app.config['HOST'] + "/processResetPassword?email=" + email + "?token=" + dbToken
         htmlMsg = """"
         <html>
@@ -85,12 +84,15 @@ class Email:
 
 
 
-        plainMsg = "Hello from freeChamp! Click the following link to reset your password: http://" + app.config['HOST'] + \
-        "/process"
+        plainMsg = "Hello from freeChamp! Click the following link to reset your password: " + url
 
 
         subject = "freeChamp password reset"
-        self.sendEmail(email, subject, plainMsg, htmlMsg)
+        emailSent = self.sendEmail(email, subject, plainMsg, htmlMsg)
+        if not emailSent:
+            return False
+        else:
+            return True
 
     def sendEmail(self, toEmail, subject, body, html):
         notificationEmail = app.config['NOTIFICATIONEMAIL']
@@ -102,6 +104,7 @@ class Email:
         except smtplib.SMTPAuthenticationError as e:
             runSMTPAuthExceptionCode(server, e)
 
+            return False
 
         msg = MIMEMultipart('alternative')
         # Create the body of the message (a plain-text and an HTML version).
@@ -115,7 +118,7 @@ class Email:
         msg.attach(part2)
         email_text =  msg.as_string()
         try:
-            server.sendmail(notificationEmail, toEmail, email_text)
+            test = server.sendmail(notificationEmail, toEmail, email_text)
         finally:
             server.quit()
 

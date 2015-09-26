@@ -1,21 +1,24 @@
 $(document).ready(function(){
+$("#myform").submit(function(e){
+    e.preventDefault();
 $(".error").hide();
 var email = $("#email").val();
 $.ajax({
   type: "GET",
-  url: "/processResetPassword",
+  url: "/sendResetPassword",
   data: { varEmail: email},
   success: function(data, textStatus, jqXHR)
   {
       alert("password reset request sent");
   },
-  error: function(jqXHR, data,textStatus)
+  error: function(jqXHR, textStatus, error)
   {
 
       var status = jqXHR.status;
-      if (jqXHR == "INTERNAL SERVER ERROR"){
+      if (status == "500"){
       alert("server error");
                         }
   },
         });//ajax call
+        });//submit
 });//doc rdy

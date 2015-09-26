@@ -41,12 +41,9 @@ $(document).ready(function(){
                   success: function(data, textStatus, jqXHR)
                   {
                       alert("email verification sent");
-
-
                   },
                   error: function(data,textStatus, jqXHR)
                   {
-
                         var status = jqXHR.status;
                         if (jqXHR == "INTERNAL SERVER ERROR"){
                             alert("server error");
