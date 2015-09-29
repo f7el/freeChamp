@@ -42,10 +42,10 @@ $(document).ready(function(){
                   {
                       alert("email verification sent");
                   },
-                  error: function(data,textStatus, jqXHR)
+                  error: function(jqXHR,textStatus, data)
                   {
                         var status = jqXHR.status;
-                        if (jqXHR == "INTERNAL SERVER ERROR"){
+                        if (status == "500"){
                             alert("server error");
                         }
                         else if (status == "401"){

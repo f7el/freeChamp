@@ -75,7 +75,7 @@ class Email:
     #return false if email failed to send
     def sendForgotPassword(self, email):
         dbToken = getToken(email)
-        url = "http://" + app.config['HOST'] + "/processResetPassword?email=" + email + "?token=" + dbToken
+        url = "http://" + app.config['HOST'] + ":5001/processResetPassword?email=" + email + "&token=" + dbToken
         htmlMsg = """"
         <html>
         <header></header>
@@ -103,7 +103,6 @@ class Email:
             server.login(notificationEmail, emailPw)
         except smtplib.SMTPAuthenticationError as e:
             runSMTPAuthExceptionCode(server, e)
-
             return False
 
         msg = MIMEMultipart('alternative')
@@ -118,7 +117,8 @@ class Email:
         msg.attach(part2)
         email_text =  msg.as_string()
         try:
-            test = server.sendmail(notificationEmail, toEmail, email_text)
+            server.sendmail(notificationEmail, toEmail, email_text)
+            return True
         finally:
             server.quit()
 
@@ -202,4 +202,3 @@ def runSMTPAuthExceptionCode(server, e):
     level=logging.ERROR)
     logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
     server.quit()
-    return False

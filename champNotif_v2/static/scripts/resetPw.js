@@ -7,7 +7,7 @@ $.ajax({
   type: "GET",
   url: "/sendResetPassword",
   data: { varEmail: email},
-  success: function(data, textStatus, jqXHR)
+  success: function(jqXHR, status, data)
   {
       alert("password reset request sent");
   },
