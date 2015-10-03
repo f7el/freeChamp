@@ -307,6 +307,12 @@ def processOptout():
     flash("You will no longer receive notifications")
     return render_template('optOut.html')
 
+#update a users password to the specified value
+@app.route('/updatePassword', methods=['POST'])
+def updatePassword():
+    pw = request.form['varPw']
+    return "OK"
+
 @app.route('/resetPassword', methods=['GET'])
 def resetPassword():
     return render_template('resetPassword.html')
