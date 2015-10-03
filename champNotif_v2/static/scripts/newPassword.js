@@ -19,9 +19,10 @@ $.ajax({
   error: function(jqXHR, textStatus, error)
   {
 
+
       var status = jqXHR.status;
-      if (status == "500"){
-      alert("server error");
+      if (status == "401"){
+      alert("unauthorized");
                         }
   },
         });//ajax call

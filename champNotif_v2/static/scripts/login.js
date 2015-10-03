@@ -21,15 +21,19 @@ $("#myform").submit(function(e){
 
             var status = jqXHR.status;
             if (jqXHR.responseText == "Invalid captcha"){
-                $("#captcha").show();
+                 $("#captcha").show();
+
             }
             else if(status == "401"){
-                $("#401").show();
+                 $("#401").show();
+
             }
             else if (status == "403"){
                 $("#403").show();
+
             }
             $("#pw").val('');
+            grecaptcha.reset();
       },
         });//ajax call
     });//submit

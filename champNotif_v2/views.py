@@ -2,7 +2,7 @@ __author__ = 'Paul'
 
 from champNotif_v2 import app
 from flask import session, redirect, url_for, render_template, request, abort, flash
-from Email import *
+import Email
 from champToken import *
 from security import securePw
 from utility import genRandomString
@@ -11,9 +11,6 @@ from validate import *
 import logging
 import gResponse
 
-
-
-emailLib = Email()
 @app.route('/')
 def index():
     return render_template('login.html')
@@ -27,7 +24,7 @@ def login():
     #check if the captcha was successful
     if gResponse.isVerified(postGresponse):
         t = (postEmail,)
-        if emailLib.emailExists(postEmail):
+        if Email.emailExists(postEmail):
             result = query_db('SELECT email, password, salt, isVerified FROM users WHERE email=?', t)
             resultList = result[0]
             email, hashedPw, salt, isVerified = resultList
@@ -89,15 +86,15 @@ def verifyEmailForm():
 @app.route('/processRegister', methods=['POST'])
 def processRegister():
     email = request.form['varEmail']
-    if not emailLib.emailExists(email):
+    if not Email.emailExists(email):
         pw = request.form['varPassword']
         salt = genRandomString()
         newPw = securePw(salt, pw)
         isVerified = 0 #false
-        emailLib.addEmail(email, newPw, salt, isVerified)
+        Email.addEmail(email, newPw, salt, isVerified)
         token = genRandomString()
-        emailLib.addVerification(email,token)
-        result = emailLib.sendVerificationEmail(email,token)
+        Email.addVerification(email,token)
+        result = Email.sendVerificationEmail(email,token)
         if result == True:
             return 'OK'
         else:
@@ -111,11 +108,11 @@ def processRegister():
 def sendAnotherVerification():
     if request.method == 'GET':
         email = request.args['email']
-        if emailLib.emailExists(email):
-            canSend = emailLib.checkSendLimit(email)
+        if Email.emailExists(email):
+            canSend = Email.checkSendLimit(email)
             if canSend:
-                token = emailLib.genNewToken(email)
-                emailLib.sendVerificationEmail(email,token)
+                token = Email.genNewToken(email)
+                Email.sendVerificationEmail(email,token)
 
 @app.route('/verifyEmail', methods=['GET'])
 def verifyEmail():
@@ -126,7 +123,7 @@ def verifyEmail():
     exist = tokenExists(requestToken)
     if exist:
         email = getEmailFromToken(requestToken)
-        emailLib.makeEmailActive(email)
+        Email.makeEmailActive(email)
         return render_template('emailActive.html')
     else:
         return render_template('emailVerificationFailed.html')
@@ -272,7 +269,7 @@ def freeChampPollTest():
 
 
 
-        emailLib.sendEmail(email, subject, msg, htmlMsg)
+        Email.sendEmail(email, subject, msg, htmlMsg)
 
     return "OK"
 
@@ -288,7 +285,7 @@ def freeChampPoll():
     newFreeChamps = list(set(apiIds) - set(dbIds))
 
     if len(newFreeChamps) > 0:
-        emailLib.sendChampNotifEmail(apiIds)
+        Email.sendChampNotifEmail(apiIds)
 
     return "OK"
 
@@ -311,7 +308,20 @@ def processOptout():
 @app.route('/updatePassword', methods=['POST'])
 def updatePassword():
     pw = request.form['varPw']
-    return "OK"
+
+    #if the token in the session equals the token in the database
+    if (session['token'] == getToken(session['email'])):
+        #if pw is valid, update user's pw in db
+        if passwordIsValid(pw):
+            salt = getSalt(session['email'])
+            hashedPw = securePw(salt, pw)
+            g.db = get_db()
+            t = (hashedPw, session['email'])
+            g.db.execute('UPDATE USERS SET password=(?) WHERE email=(?) ', t)
+            g.db.commit()
+            return "OK"
+
+    abort(401)
 
 @app.route('/resetPassword', methods=['GET'])
 def resetPassword():
@@ -321,8 +331,8 @@ def resetPassword():
 def sendResetPassword():
     email = request.args['varEmail']
     if emailIsValid(email):
-        if emailLib.emailExists(email):
-           emailSent = emailLib.sendForgotPassword(email)
+        if Email.emailExists(email):
+           emailSent = Email.sendForgotPassword(email)
     if emailSent:
         return 'OK'
     else:
@@ -333,9 +343,11 @@ def processResetPassword():
     email = request.args['email']
     httpGetToken = request.args['token']
     if emailIsValid(email):
-        if emailLib.emailExists(email):
+        if Email.emailExists(email):
             dbToken = getToken(email)
             if tokensMatch(httpGetToken, dbToken):
+                session['email'] = email
+                session['token'] = dbToken
                 return render_template('newPassword.html')
 
 

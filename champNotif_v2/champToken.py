@@ -10,6 +10,13 @@ def getToken(email):
     (token,) = query_db('SELECT token FROM verification WHERE email=?', t, one=True)
     return token
 
+def getSalt(email):
+    t = (email,)
+    print "DEBUG: email is " + email
+    (salt,) = query_db('SELECT salt FROM USERS WHERE email=?', t, one=True)
+    print "DEBUG: salt is " + salt
+    return salt
+
 
 def tokenIsAlive(self,token):
     t = (token,)
