@@ -186,6 +186,9 @@ def checkForNewChamps():
             t = (name, key, isFree, id)
             g.db.execute("INSERT INTO CHAMPS VALUES (?, ?, ?, ?)", t)
         g.db.commit()
+        #check that we have the latest dragon ver
+        (dbVer,) = query_db('SELECT version from dragonVer')
+        ver = getDragonVer()
         return "True"
     return "False"
 

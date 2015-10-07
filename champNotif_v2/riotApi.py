@@ -45,16 +45,19 @@ def getListOfChamps():
     for dict in objOfLists:
         champList.append(getChampById(str(dict['id'])))
     return champList
-#
-# def getDragonVer():
-#     url = "https://" + globalEndpoint + lolStaticData + versions?api_key=" + api_key
-#     response = requests.get(url)
-#     print response.json()
+
+#get the latest image repo version in order to render the latest champ images
+def getDragonVer():
+    url = "https://" + globalEndpoint + "/api/lol/static-data/na/v1.2/versions?api_key=" + api_key
+    response = requests.get(url)
+    jObj = response.json()
+    return jObj[0]
+
 
 
 
 def main():
-    data = getChampInfoById(133)
+    data = getDragonVer()
     print data
 if __name__ == "__main__":
 
