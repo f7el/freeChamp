@@ -186,9 +186,6 @@ def checkForNewChamps():
             t = (name, key, isFree, id)
             g.db.execute("INSERT INTO CHAMPS VALUES (?, ?, ?, ?)", t)
         g.db.commit()
-        #check that we have the latest dragon ver
-        (dbVer,) = query_db('SELECT version from dragonVer')
-        ver = getDragonVer()
         return "True"
     return "False"
 
@@ -354,5 +351,20 @@ def processResetPassword():
                 return render_template('newPassword.html')
 
 
+#update dragon img repo
+@app.route('/updateDragon', methods=['GET'])
+def updateDragon():
+    logging.basicConfig(filename='freeChampEvents.log',format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',
+    level=logging.INFO)
+    (dbVer,) = query_db('SELECT version from dragonVer', one=True)
+    apiVer = getDragonVer()
+    if dbVer == apiVer:
+        pass
+    else:
+        t = (apiVer,)
+        g.db.execute('UPDATE dragonVer SET version=(?)', t)
+        g.db.commit()
+        logging.info('updated dragon version to ' + apiVer)
+    return "OK"
 
 
