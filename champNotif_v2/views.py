@@ -54,6 +54,7 @@ def login():
 @app.route('/members')
 def members():
     if 'logged_in' in session:
+        (dragonVer,) = query_db("SELECT version from dragonVer", one=True)
         t = session['email']
         lstChamps = query_db("""SELECT champs.champ, champs.key, champs.free,
                                     case when notify.email is not null
@@ -65,7 +66,7 @@ def members():
                                 ORDER BY champs.champ;""", (t,))
 
 
-        return render_template('members.html', lstChamps=lstChamps, postEmail=session['email'])
+        return render_template('members.html', lstChamps=lstChamps, postEmail=session['email'], dragonVer=dragonVer)
     else:
         return render_template('401.html')
 
