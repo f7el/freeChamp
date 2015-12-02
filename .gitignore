@@ -3,5 +3,6 @@ champNotif_v2/info.py
 .idea/*
 *.iml
 *.swp
+freeChamp.db
 
 

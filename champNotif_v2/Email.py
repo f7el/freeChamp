@@ -59,8 +59,9 @@ def sendVerificationEmail(email, token):
     except smtplib.SMTPAuthenticationError as e:
         runSMTPAuthExceptionCode(server, e)
 
-    msg = MIMEText("Click the link to confirm your e-mail \n\n" + "http://freechamp.sonyar.info:9090" + \
+    msg = MIMEText("Click the link to confirm your e-mail \n\n" + "http://127.0.0.1:5001" + \
                    "/verifyEmail?token="+token)
+
     msg['To'] = email
     msg['From'] =notificationEmail
     msg['Subject'] = 'email verification'

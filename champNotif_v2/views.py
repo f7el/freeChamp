@@ -98,7 +98,7 @@ def processRegister():
         if result == True:
             return 'OK'
         else:
-            return 500
+            abort(500)
 
     #NEED TO MAKE CUSTOM HANDLER FOR EMAIL ALREADY EXISTS <---------------------------------------------
     else:

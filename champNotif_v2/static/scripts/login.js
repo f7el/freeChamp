@@ -11,10 +11,7 @@ $("#myform").submit(function(e){
       data: { varEmail: email, varPassword: pw, varGresponse: gResponse},
       success: function(data, textStatus, jqXHR)
       {
-          $.getScript("/static/scripts/server.js", function(){
-          window.location = devServer.concat('/members'); });
-
-
+          window.location = '/members';
       },
       error: function(jqXHR, data,textStatus)
       {
