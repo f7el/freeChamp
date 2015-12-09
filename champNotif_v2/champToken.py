@@ -18,23 +18,25 @@ def getSalt(email):
     return salt
 
 
-def tokenIsAlive(self,token):
+def tokenIsAlive(token):
     t = (token,)
     (timeStamp,) = query_db('SELECT timestamp FROM VERIFICATION WHERE token=?', t, one=True)
     t = (timeStamp,)
     #result is 1 if time is less than 48 hrs. else result is 0
     (isExpired,) = query_db("SELECT cast((strftime('%s','now','localtime')- strftime('%s',?)) AS real)/60/60 < 48.00",
                             t, one=True)
+    (debug,) =  query_db("SELECT cast((strftime('%s','now','localtime')- strftime('%s',?)) AS real)/60/60", t, one=True)
+    print "time is" + str(debug)
     return isExpired == 1
 
-def genNewToken(self,email):
-    g.db = get_db()
-    newToken = self.genRandomString()
-    token = self.getToken(email)
-    t = (newToken,token)
-    g.db.execute('UPDATE verification SET token=?, timestamp=datetime("now","localtime") WHERE token=?', t)
-    g.db.commit()
-    return newToken
+# def genNewToken(email):
+#     g.db = get_db()
+#     newToken = genRandomString()
+#     token = getToken(email)
+#     t = (newToken,token)
+#     g.db.execute('UPDATE verification SET token=?, timestamp=datetime("now","localtime") WHERE token=?', t)
+#     g.db.commit()
+#     return newToken
 
 def tokenExists(token):
     t = (token,)

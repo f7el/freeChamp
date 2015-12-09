@@ -108,12 +108,20 @@ def processRegister():
 @app.route('/sendAnotherVerification', methods=['GET'])
 def sendAnotherVerification():
     if request.method == 'GET':
-        email = request.args['email']
+        email = request.args['varEmail']
         if Email.emailExists(email):
             canSend = Email.checkSendLimit(email)
             if canSend:
-                token = Email.genNewToken(email)
-                Email.sendVerificationEmail(email,token)
+                if Email.sendVerificationEmail(email):
+                    return "OK"
+            #user has surpassed their registration limit
+            else:
+                return "user has surpassed the send limit"
+        #if the email is not in the users table, the user has not performed an initial registration
+        else:
+            return "use initial verification form"
+
+
 
 @app.route('/verifyEmail', methods=['GET'])
 def verifyEmail():

@@ -1,6 +1,6 @@
 __author__ = 'StormCrow'
 
-from flask import g
+from flask import g, abort
 from champNotif_v2 import app
 import sqlite3, os, hashlib, smtplib
 from database import get_db,query_db
@@ -14,8 +14,15 @@ import logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+#provides opt-out msg for the email defs. isHTML is a bool that helpers determine what type of msg to return (plain or html)
+#token is the unique identifier for a user
+def getOptOutMessage(token, isHTML=False):
+    if not isHTML:
+        optOutMsg = "\n\nhttp://" + app.config['HOST'] + ":" + str(app.config['PORT']) + "/optOut>opt-out?token=" + token
+    else:
+        optOutMsg = "<br/><br/><a href=http://" + app.config['HOST'] + ":" + str(app.config['PORT']) + "/optOut>opt-out?token=" + token + "</a>"
 
-
+    return optOutMsg
 
 def addEmail( email, password, salt, isVerified):
     t = (email, password, salt, isVerified)
@@ -34,6 +41,16 @@ def addVerification( email, token):
     updateVerificationCount(email,1)
     g.db.commit()
 
+#updates timestamp and count for verification
+def refreshVerification(email):
+    db = get_db()
+    dt = query_db("SELECT datetime('now','localtime')",one=True)
+    t = (dt[0],email)
+    db.execute("UPDATE VERIFICATION SET timestamp=? WHERE email=(?)",t)
+    updateVerificationCount(email,1)
+    g.db.commit()
+
+
 def emailExists(email):
     t = (email,)
     result = query_db('SELECT COUNT(email) FROM USERS WHERE email=(?)', t, one=True)
@@ -49,9 +66,10 @@ def makeEmailActive(email):
     g.db.commit()
 
 #return true if success. else return false
-def sendVerificationEmail(email, token):
+def sendVerificationEmail(email):
     notificationEmail = app.config['NOTIFICATIONEMAIL']
     emailPw = app.config['EMAILPW']
+    token = getToken(email)
     server = smtplib.SMTP('smtp.gmail.com',587)
     server.starttls()
     try:
@@ -59,7 +77,7 @@ def sendVerificationEmail(email, token):
     except smtplib.SMTPAuthenticationError as e:
         runSMTPAuthExceptionCode(server, e)
 
-    msg = MIMEText("Click the link to confirm your e-mail \n\n" + "http://127.0.0.1:5001" + \
+    msg = MIMEText("Click the link to confirm your e-mail \n\n" + "http://" + app.config['HOST'] + ":" + str(app.config['PORT'])+ \
                    "/verifyEmail?token="+token)
 
     msg['To'] = email
@@ -67,6 +85,9 @@ def sendVerificationEmail(email, token):
     msg['Subject'] = 'email verification'
     try:
         server.sendmail(notificationEmail, email, msg.as_string())
+        return True
+    except:
+        return abort(500)
     finally:
         server.quit()
 #return false if email failed to send
@@ -119,7 +140,7 @@ def sendEmail(toEmail, subject, body, html):
     finally:
         server.quit()
 
-def sendChampNotifEmail( apiIds):
+def sendChampNotifEmail(apiIds):
     logging.basicConfig(filename='freeChampEvents.log',format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',
 level=logging.INFO)
     subject = "Free Champion Notification"
@@ -140,15 +161,25 @@ level=logging.INFO)
             SELECT champs.champ
             FROM CHAMPS
             JOIN notify ON champs.champ = notify.champ
-            where noti fy.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
+            where notify.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
 
         msg = "Hello from Free Champ! You wished to be notified when the below champs are free: \n"
 
         for champ in freeChampsSelectedByUser:
             msg += champ + '\n'
         token = getToken(email)
-        msg += "\n\n <a href=http://" + app.config['HOST'] + ":" + app.config['PORT'] + "/optOut>opt-out?token=" + token + "</a>"
-        sendEmail(email, subject, msg)
+       #msg += "\n\n <a href=http://" + app.config['HOST'] + ":" + str(app.config['PORT']) + "/optOut>opt-out?token=" + token + "</a>"
+        msg += getOptOutMessage(token)
+        htmlMsg = """
+        <html>
+        <header></header>
+        <body>
+        <p>Hello from Free Champ! You wished to be notified when the below champs are free:"""
+        for champ in freeChampsSelectedByUser:
+            htmlMsg += "<br/>" + champ + "<br/><br/>"
+            htmlMsg += getOptOutMessage(token, isHTML=True)
+            htmlMsg += "</body></html>"
+        sendEmail(email, subject, msg, htmlMsg)
 
 def resetVerificationCount(email):
     g.db = get_db()
@@ -179,17 +210,19 @@ def verificationFromToday(email):
  #returns true if send limit has not been exceeded for a given email
 def checkSendLimit(email):
     if emailExists(email):
-        token = _getToken(email)
-        if tokenIsAlive(token):
-            count = getCount(email)
-            if count == 0:
-                updateVerificationCount(email,1)
+        count = getCount(email)
+        if count == 0:
+            updateVerificationCount(email,1)
+            return True
+        elif count == 1:
+            updateVerificationCount(email,2)
+            return True
+        else:
+            token = getToken(email)
+            if not tokenIsAlive(token):
+                refreshVerification(email)
                 return True
-            elif count == 1:
-                updateVerificationCount(email,2)
-                return True
-            else:
-                return False
+            return False
     else:
         return False
 

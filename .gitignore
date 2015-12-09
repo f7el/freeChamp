@@ -4,5 +4,4 @@ champNotif_v2/info.py
 *.iml
 *.swp
 freeChamp.db
-
-
+freeChampEvents.log
