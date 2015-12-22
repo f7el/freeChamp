@@ -25,8 +25,6 @@ def tokenIsAlive(token):
     #result is 1 if time is less than 48 hrs. else result is 0
     (isExpired,) = query_db("SELECT cast((strftime('%s','now','localtime')- strftime('%s',?)) AS real)/60/60 < 48.00",
                             t, one=True)
-    (debug,) =  query_db("SELECT cast((strftime('%s','now','localtime')- strftime('%s',?)) AS real)/60/60", t, one=True)
-    print "time is" + str(debug)
     return isExpired == 1
 
 # def genNewToken(email):

@@ -154,7 +154,7 @@ level=logging.INFO)
     #get a list of users that have selected champs they want to be notified when they are free
     emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
     emailNum = len(emails)
-    logging.info("sending " + str(emailNum) + "notification emails")
+    logging.info("sending " + str(emailNum) + " notification email(s)")
     print("updating free champ rotation. \n" + str(len(emails)) + " emails in this update")
     for email in emails:
         freeChampsSelectedByUser = [champ[0] for champ in query_db("""
@@ -177,8 +177,8 @@ level=logging.INFO)
         <p>Hello from Free Champ! You wished to be notified when the below champs are free:"""
         for champ in freeChampsSelectedByUser:
             htmlMsg += "<br/>" + champ + "<br/><br/>"
-            htmlMsg += getOptOutMessage(token, isHTML=True)
-            htmlMsg += "</body></html>"
+        htmlMsg += getOptOutMessage(token, isHTML=True)
+        htmlMsg += "</body></html>"
         sendEmail(email, subject, msg, htmlMsg)
 
 def resetVerificationCount(email):

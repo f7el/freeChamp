@@ -95,7 +95,7 @@ def processRegister():
         Email.addEmail(email, newPw, salt, isVerified)
         token = genRandomString()
         Email.addVerification(email,token)
-        result = Email.sendVerificationEmail(email,token)
+        result = Email.sendVerificationEmail(email)
         if result == True:
             return 'OK'
         else:
