@@ -203,7 +203,13 @@ def champUnselected():
     if 'logged_in' in session:
         email = session['email']
         champName = request.form['varChampName']
-        if nameIsValidated(champName):
+        if champName == "ALL":
+            t = (email,)
+            g.db = get_db()
+            g.db.execute("DELETE FROM NOTIFY WHERE email=(?)", t)
+            g.db.commit()
+            return 'OK'
+        elif nameIsValidated(champName):
             t = (email, champName)
             g.db = get_db()
             g.db.execute("DELETE FROM NOTIFY WHERE email=(?) and champ=(?)", t)
@@ -213,11 +219,23 @@ def champUnselected():
             abort(400)
     abort(401)
 
+
+
 @app.route('/champSelected', methods=['POST'])
 def champSelected():
     if 'logged_in' in session:
         champName = request.form['varChampName']
-        if nameIsValidated(champName):
+        if champName == "ALL":
+            g.db = get_db()
+            t = (session['email'],session['email'])
+            g.db.execute("""INSERT INTO Notify (champ, email)
+                            SELECT Champs.champ, (?)
+                            FROM Champs
+                            LEFT JOIN Notify ON Champs.champ = Notify.champ AND Notify.email =(?)
+                            WHERE Notify.champ IS NULL""", t)
+            g.db.commit()
+            return "OK"
+        elif nameIsValidated(champName):
             t = (champName, session['email'])
             g.db = get_db()
             g.db.execute("INSERT INTO NOTIFY (champ, email) VALUES (?,?)", t)
