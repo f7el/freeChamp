@@ -12,6 +12,45 @@
                     window.location = '/';
                 }
             });
+
+        $("#btnSelectAll").click(function() {
+			$("div.champ").each(function(i, obj) {
+			    if( $(obj).find('img.nocheck').length > 0) {
+                   $(obj).find('img.nocheck').removeClass("nocheck");
+                   $(obj).find('img.champ_thumbnail').addClass("check_champ");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/champSelected",
+                        data:  {varChampName: $(obj).find("p").text()},
+                        success: function(data) {
+                        }
+                    });
+                }
+			});
+		});
+
+        $("#btnUnselectAll").click(function() {
+			$("div.champ").each(function(i, obj) {
+			    if( $(obj).find('img.nocheck').length > 0) {
+
+                } else {
+                    $(obj).find('img.check').addClass("nocheck");
+
+                    $(obj).find('img.champ_thumbnail').removeClass("check_champ");
+                    //$("#Msg").html($(this).find("p").text() + " Unchecked");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/champUnselected",
+                        data:  {varChampName: $(obj).find("p").text()},
+                        success: function(data) {
+                        }
+                    });
+                }
+			});
+		});
+
         $("div.champ").click(function() {
         if( $(this).find('img.nocheck').length > 0) {
             $(this).find('img.nocheck').removeClass("nocheck");
@@ -43,9 +82,14 @@
     });
     });
 </script>
-
-
+<div allOrNone style="margin:20px">
+      <input id="btnUnselectAll" type="button" name="btnUnselectAll" value="un-select all">
+      <br>
+      <input  id="btnSelectAll" type="button" name="btnSelectAll" value="select all">
+</div>
 <div class="panel panel-primary" style="margin:20px">
+
+
     <div class="panel-heading">
         <p>Champions</p>
     </div>
@@ -60,7 +104,6 @@
                     {% if champInfo['free'] == 1 %}
                     <span class="label label-success free">Free</span>
                     {% endif %}
-
                     {% set cc = "" %}
 
                     {% if champInfo['Selected'] == 'true' %}
