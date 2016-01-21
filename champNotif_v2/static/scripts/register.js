@@ -22,6 +22,11 @@ $(document).ready(function(){
                 $("#pwBlank").show();
                 error = true;
             }
+            else if (!validatePassword(pw)){
+                $("#pwFormat").show();
+                error=true;
+            }
+
 
             var verifyPw = $("#password2").val();
             if (isEmpty(verifyPw)) {
@@ -29,7 +34,7 @@ $(document).ready(function(){
                 error = true;
             }
 
-            if (!pw == verifyPw) {
+            if (pw != verifyPw) {
                 error = true;
                 $("#pwMismatch").show();
             }

@@ -11,24 +11,31 @@
         <div class="form-group">
             <div class='input-group'>
                 <span class='input-group-addon'><span class='glyphicon glyphicon-user'></span></span>
-                <input class='form-control' type="email" name="email" id="email" placeholder="Email Address" required pattern="^[a-zA-Z0-9+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$"/>
+                <input class='form-control' type="email" name="email" id="email" placeholder="Email Address"/>
+                <font id="emailBlank" class="error" color="red">Please enter your email</font>
+                <font id="emailFormat" class="error" color="red">incorrect email format</font>
             </div>
         </div>
          <div class='form-group'>
                 <div class='input-group'>
                     <span class='input-group-addon'><span class="glyphicon glyphicon-lock"></span></span>
-                    <input class='form-control' type='password' name="password" id="password" value="1" placeholder="Password" required/>
+                    <input class='form-control' type='password' name="password" id="password" placeholder="Password"/>
+                    <font id="pwBlank" class="error" color="red">Please enter password</font>
                 </div>
             </div>
         <div class='form-group'>
                 <div class='input-group'>
                     <span class='input-group-addon'><span class="glyphicon glyphicon-lock"></span></span>
-                    <input class='form-control' type='password' name="password2" id="password2" value="1" placeholder="Enter password again" required/>
+                    <input class='form-control' type='password' name="password2" id="password2" placeholder="Enter password again"/>
+                    <font id="pw2Blank" class="error" color="red">Please enter password</font>
+
+
                 </div>
             </div>
 
 
 
+          <ul style='color:red' id="pwFormat" class="error">password rules not met <br/> password requirements<br/><li>4 to 8 characters</li><li>atleast 1 lowercase</li><li>atleast 1 uppercase</li><li>atleast 1 number</li></ul>
           <div id="pwMismatch" class="error"><font color="red">passwords do not match</font></div>
           <input type="submit" value="submit" id="submit"><br><br>
 
