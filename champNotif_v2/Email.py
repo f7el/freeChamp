@@ -93,12 +93,12 @@ def sendVerificationEmail(email):
 #return false if email failed to send
 def sendForgotPassword( email):
     dbToken = getToken(email)
-    url = "http://" + app.config['HOST'] + ":5001/processResetPassword?email=" + email + "&token=" + dbToken
+    url = "http://" + app.config['HOST'] + ":" + str(app.config['PORT']) + "/processResetPassword?email=" + email + "&token=" + dbToken
     htmlMsg = """
     <html>
     <header></header>
     <body>
-      <p>Hello from freeChamp! Click <a href=""""" + url + ">here</a> to reset your password</body></html>"
+    <p>Hello from freeChamp! Click <a href=""" + url + ">here</a> to reset your password</body></html>"
 
 
 
