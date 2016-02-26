@@ -394,4 +394,7 @@ def updateDragon():
         logging.info('updated dragon version to ' + apiVer)
     return "OK"
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
