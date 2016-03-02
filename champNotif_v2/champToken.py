@@ -12,9 +12,7 @@ def getToken(email):
 
 def getSalt(email):
     t = (email,)
-    print "DEBUG: email is " + email
     (salt,) = query_db('SELECT salt FROM USERS WHERE email=?', t, one=True)
-    print "DEBUG: salt is " + salt
     return salt
 
 

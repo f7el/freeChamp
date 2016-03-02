@@ -359,6 +359,8 @@ def sendResetPassword():
     email = request.args['varEmail']
     if emailIsValid(email):
         if Email.emailExists(email):
+            #check daily limit
+
            emailSent = Email.sendForgotPassword(email)
     if emailSent:
         return 'OK'
