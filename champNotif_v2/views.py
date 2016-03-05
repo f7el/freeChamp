@@ -10,6 +10,7 @@ from riotApi import *
 from validate import *
 import logging
 import gResponse
+from forgotPassword import *
 
 @app.route('/')
 def index():
@@ -359,9 +360,17 @@ def sendResetPassword():
     email = request.args['varEmail']
     if emailIsValid(email):
         if Email.emailExists(email):
-            #check daily limit
+            #check if an entry exists in reset table
+            if not resetAttemptExists(email):
+                insertResetAttempt(email)
+                emailSent = Email.sendForgotPassword(email)
+            #if an entry exists, check if it has exceeded 24-hrs
+            elif canResetPw(email):
+                refreshPwTimestamp(email)
+                emailSent = Email.sendForgotPassword(email)
+            else:
+                abort(403)
 
-           emailSent = Email.sendForgotPassword(email)
     if emailSent:
         return 'OK'
     else:

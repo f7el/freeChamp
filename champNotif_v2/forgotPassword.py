@@ -26,3 +26,10 @@ def refreshPwTimestamp(email):
     t = (dt, email)
     db.execute("UPDATE resetPw SET timestamp=? WHERE email=?", t)
     db.commit()
+
+#return true if an entry exists
+def resetAttemptExists(email):
+    db = get_db()
+    t = (email,)
+    (attemptExists,) = query_db("COUNT (email) FROM resetPw WHERE email=?", t, one=True)
+    return attemptExists == 1
