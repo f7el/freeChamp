@@ -368,6 +368,7 @@ def sendResetPassword():
             elif canResetPw(email):
                 refreshPwTimestamp(email)
                 emailSent = Email.sendForgotPassword(email)
+            #exceeded 24-hr limit
             else:
                 abort(403)
 

@@ -16,8 +16,11 @@ $.ajax({
 
       var status = jqXHR.status;
       if (status == "500"){
-      alert("server error");
+          alert("server error");
                         }
+      else if(status == "403"){
+          alert("daily send limit reached");
+      }
   },
         });//ajax call
         });//submit
