@@ -1,9 +1,18 @@
 $(document).ready(function(){
 $(".error").hide();
+ $.getScript("/static/scripts/validate.js", function(){
 $("#myform").submit(function(e){
     e.preventDefault();
     var email = $("#email").val();
     var pw = $("#pw").val();
+    if (isEmpty(email)){
+           $("#emailBlank").show();
+           error = true;
+    }else if (!validateEmailFormat(email)){
+                $("#emailFormat").show();
+                error = true;
+            }
+
     var gResponse = $("#g-recaptcha-response").val();
     $.ajax({
       type: "POST",
@@ -34,4 +43,5 @@ $("#myform").submit(function(e){
       },
         });//ajax call
     });//submit
+    });//import validate
 });//doc rdy

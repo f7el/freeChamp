@@ -13,13 +13,13 @@
             <div class='form-group'>
                 <div class='input-group'>
                     <span class='input-group-addon'><span class='glyphicon glyphicon-user'></span></span>
-                    <input class='form-control' type="email" name="email" id="email" placeholder="Email Address" required pattern="^[a-zA-Z0-9+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$"/>
+                    <input class='form-control' type="email" name="email" id="email" placeholder="Email Address" pattern="^[a-zA-Z0-9+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$" required/>
                 </div>
             </div>
             <div class='form-group'>
                 <div class='input-group'>
                     <span class='input-group-addon'><span class="glyphicon glyphicon-lock"></span></span>
-                    <input class='form-control' type='password' name="pw" id="pw" placeholder="Password" required />
+                    <input class='form-control' type='password' name="pw" id="pw" placeholder="Password" pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$" required/>
 
                 </div>
             </div>
@@ -28,6 +28,8 @@
             </div>
             <div class='form-group'>
                 <button type="submit" id="submit" class='btn btn-success pull-right' >Login</button>
+                <font color="red" class="error" id="emailBlank">Please enter your email</font>
+                <font id="emailFormat" class="error" color="red">incorrect email format</font>
                 <font color="red" class="error" id="401">Unauthorized</font>
                 <font color="red" class="error" id="403">Email not verified</font>
                 <font color="red" class="error" id="captcha">Please check the captcha box</font>

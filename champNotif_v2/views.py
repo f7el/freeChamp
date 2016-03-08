@@ -20,37 +20,44 @@ def index():
 def login():
     postEmail = request.form['varEmail']
     postPw = request.form['varPassword']
-    postGresponse = request.form['varGresponse']
+    if emailIsValid(postEmail):
+        if passwordIsValid(postPw):
+            postGresponse = request.form['varGresponse']
 
-    #check if the captcha was successful
-    if gResponse.isVerified(postGresponse):
-        t = (postEmail,)
-        if Email.emailExists(postEmail):
-            result = query_db('SELECT email, password, salt, isVerified FROM users WHERE email=?', t)
-            resultList = result[0]
-            email, hashedPw, salt, isVerified = resultList
+            #check if the captcha was successful
+            if gResponse.isVerified(postGresponse):
+                t = (postEmail,)
+                if Email.emailExists(postEmail):
+                    result = query_db('SELECT email, password, salt, isVerified FROM users WHERE email=?', t)
+                    resultList = result[0]
+                    email, hashedPw, salt, isVerified = resultList
 
-            if isVerified == 1:
-                isVerified = True
-            else:
-                isVerified = False
+                    if isVerified == 1:
+                        isVerified = True
+                    else:
+                        isVerified = False
 
-            if isVerified:
-                loginPw = securePw(salt, postPw)
+                    if isVerified:
+                        loginPw = securePw(salt, postPw)
 
-                if loginPw == hashedPw:
-                    session['logged_in'] = True
-                    session['email'] = postEmail
+                        if loginPw == hashedPw:
+                            session['logged_in'] = True
+                            session['email'] = postEmail
 
-                    return redirect(url_for('members'))
+                            return redirect(url_for('members'))
+                        else:
+                            abort(401)
+                    else:
+                        abort(403)
                 else:
                     abort(401)
             else:
-                abort(403)
+                return 'Invalid captcha', 401
         else:
-            abort(401)
+            abort(400)
     else:
-        return 'Invalid captcha', 401
+        abort(400)
+
 
 @app.route('/members')
 def members():
