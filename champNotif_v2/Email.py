@@ -174,9 +174,9 @@ level=logging.INFO)
         <html>
         <header></header>
         <body>
-        <p>Hello from Free Champ! You wished to be notified when the below champs are free:"""
+        <p>Hello from Free Champ! You wished to be notified when the below champs are free:<br/><br/>"""
         for champ in freeChampsSelectedByUser:
-            htmlMsg += "<br/>" + champ + "<br/><br/>"
+            htmlMsg += champ + "<br/>"
         htmlMsg += getOptOutMessage(token, isHTML=True)
         htmlMsg += "</body></html>"
         sendEmail(email, subject, msg, htmlMsg)

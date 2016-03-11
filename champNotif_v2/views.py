@@ -96,18 +96,24 @@ def verifyEmailForm():
 def processRegister():
     email = request.form['varEmail']
     if not Email.emailExists(email):
-        pw = request.form['varPassword']
-        salt = genRandomString()
-        newPw = securePw(salt, pw)
-        isVerified = 0 #false
-        Email.addEmail(email, newPw, salt, isVerified)
-        token = genRandomString()
-        Email.addVerification(email,token)
-        result = Email.sendVerificationEmail(email)
-        if result == True:
-            return 'OK'
+        if emailIsValid(email):
+            pw = request.form['varPassword']
+            if passwordIsValid(pw):
+                salt = genRandomString()
+                newPw = securePw(salt, pw)
+                isVerified = 0 #false
+                Email.addEmail(email, newPw, salt, isVerified)
+                token = genRandomString()
+                Email.addVerification(email,token)
+                result = Email.sendVerificationEmail(email)
+                if result == True:
+                    return 'OK'
+                else:
+                    abort(500)
+            else:
+                abort(400)
         else:
-            abort(500)
+            abort(400)
 
     #NEED TO MAKE CUSTOM HANDLER FOR EMAIL ALREADY EXISTS <---------------------------------------------
     else:
@@ -118,13 +124,16 @@ def sendAnotherVerification():
     if request.method == 'GET':
         email = request.args['varEmail']
         if Email.emailExists(email):
-            canSend = Email.checkSendLimit(email)
-            if canSend:
-                if Email.sendVerificationEmail(email):
-                    return "OK"
-            #user has surpassed their registration limit
+            if emailIsValid(email):
+                canSend = Email.checkSendLimit(email)
+                if canSend:
+                    if Email.sendVerificationEmail(email):
+                        return "OK"
+                #user has surpassed their registration limit
+                else:
+                    return "user has surpassed the send limit"
             else:
-                return "user has surpassed the send limit"
+                abort(400)
         #if the email is not in the users table, the user has not performed an initial registration
         else:
             return "use initial verification form"
