@@ -16,7 +16,7 @@ from forgotPassword import *
 def index():
     return render_template('login.html')
 
-@app.route('/login')
+@app.route('/login', methods=['POST'])
 def login():
     postEmail = request.form['varEmail']
     postPw = request.form['varPassword']
