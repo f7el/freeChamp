@@ -20,7 +20,7 @@ def getOptOutMessage(token, isHTML=False):
     if not isHTML:
         optOutMsg = "\n\nhttp://" + app.config['HOST'] + ":" + str(app.config['PORT']) + "/optOut>opt-out?token=" + token
     else:
-        optOutMsg = "<br/><br/><a href=http://" + app.config['HOST'] + ":" + str(app.config['PORT']) + "/optOut>opt-out?token=" + token + "</a>"
+        optOutMsg = "<br/><br/><a href=http://" + app.config['HOST'] + ":" + str(app.config['PORT']) + "/optOut?token=" + token + ">opt-out</a>"
 
     return optOutMsg
 

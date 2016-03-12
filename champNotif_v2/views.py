@@ -16,7 +16,7 @@ from forgotPassword import *
 def index():
     return render_template('login.html')
 
-@app.route('/login', methods=['POST'])
+@app.route('/login')
 def login():
     postEmail = request.form['varEmail']
     postPw = request.form['varPassword']
@@ -334,13 +334,21 @@ def freeChampPoll():
     return "OK"
 
 @app.route('/optOut', methods=['GET'])
+#gets token from url. if the token is valid, allow the user to opt-out
 def optOut():
-    return render_template('optOut.html')
+    token = request.args['token']
+    if tokenExists(token):
+        session['email'] = getEmailFromToken(token)
+        return render_template('optOut.html')
+    else:
+        abort(401)
 
 #removes all notify entries for a given email
 @app.route('/processOptout', methods=['GET'])
 def processOptout():
+    #if the user is not logged in, direct to login page
     email = session['email']
+
     t = (email,)
     g.db = get_db()
     g.db.execute('DELETE FROM notify WHERE email=(?)', t)
