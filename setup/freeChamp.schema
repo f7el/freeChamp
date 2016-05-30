@@ -1,0 +1,14 @@
+CREATE TABLE VERIFICATION(
+token TEXT PRIMARY KEY,
+timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+count integer,
+email text);
+CREATE TABLE NOTIFY( champ text, email text, primary key
+CREATE TABLE CHAMPS( champ text, key text primary key, f
+CREATE TABLE USERS(
+email TEXT PRIMARY KEY,
+password TEXT,
+salt TEXT,
+isVerified integer);
+CREATE TABLE dragonVer(version text);
+CREATE TABLE resetPw (email text, timestamp datetime);
