@@ -2,7 +2,7 @@ __author__ = 'Paul'
 
 from champNotif_v2 import app
 from flask import session, redirect, url_for, render_template, request, abort, flash
-import Email
+from champNotif_v2 import Email
 from champToken import *
 from security import securePw
 from utility import genRandomString
@@ -282,13 +282,13 @@ def query():
                                 FROM champs
                                 LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = 'vandamere@gmail.com'
                                 ORDER BY champs.champ;""")
-    print lstChamps[0]['champ'] + lstChamps[0]['key'] + lstChamps[0]['Selected']
+    print (lstChamps[0]['champ'] + lstChamps[0]['key'] + lstChamps[0]['Selected'])
 
 @app.route('/freeChampPollTest')
 def freeChampPollTest():
     subject = "Free Champion Notification"
     emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
-    print emails
+    print (emails)
     for email in emails:
         freeChampsSelectedByUser = [champ[0] for champ in query_db("""
             SELECT champs.champ
