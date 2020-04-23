@@ -1,7 +1,7 @@
 __author__ = 'Paul'
-from database import query_db, get_db
+from champNotif_v2.database import query_db, get_db
 from flask import g
-from utility import genRandomString
+from champNotif_v2.utility import genRandomString
 
 
    #helper method to get a token for a given email

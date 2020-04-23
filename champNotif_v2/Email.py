@@ -3,9 +3,9 @@ __author__ = 'StormCrow'
 from flask import g, abort
 from champNotif_v2 import app
 import sqlite3, os, hashlib, smtplib
-from database import get_db,query_db
-from champToken import *
-from info import *
+from champNotif_v2.database import query_db, get_db
+from champNotif_v2.champToken import *
+from champNotif_v2.info import *
 from logging import FileHandler
 from logging import Formatter
 import logging
