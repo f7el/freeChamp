@@ -1,7 +1,7 @@
 __author__ = 'Paul'
 from champNotif_v2 import app
 import json, requests, time
-from database import query_db, get_db
+from .database import query_db, get_db
 from flask import g
 
 naEndpoint = "na.api.pvp.net"
@@ -58,7 +58,7 @@ def getDragonVer():
 
 def main():
     data = getDragonVer()
-    print data
+    print(data)
 if __name__ == "__main__":
 
     main()

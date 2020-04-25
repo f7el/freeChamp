@@ -1,4 +1,4 @@
-from database import query_db
+from .database import query_db
 import re
 def nameIsValidated(name):
     t = (name,)
