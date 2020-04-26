@@ -1,0 +1,367 @@
+04/25/2020 07:51:14 PM Exception on /processRegister [POST]
+Traceback (most recent call last):
+  File "c:\freeChamp\champNotif_v2\Email.py", line 76, in sendVerificationEmail
+    server.login(notificationEmail, emailPw)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 734, in login
+    raise last_exception
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 723, in login
+    (code, resp) = self.auth(
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 646, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials j25sm6737391qtn.21 - gsmtp')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "c:\freeChamp\champNotif_v2\views.py", line 108, in processRegister
+    result = Email.sendVerificationEmail(email)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 78, in sendVerificationEmail
+    runSMTPAuthExceptionCode(server, e)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 232, in runSMTPAuthExceptionCode
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+TypeError: can only concatenate str (not "bytes") to str
+04/25/2020 07:51:14 PM 127.0.0.1 - - [25/Apr/2020 19:51:14] "[35m[1mPOST /processRegister HTTP/1.1[0m" 500 -
+04/25/2020 07:57:48 PM Exception on /processRegister [POST]
+Traceback (most recent call last):
+  File "c:\freeChamp\champNotif_v2\Email.py", line 76, in sendVerificationEmail
+    server.login(notificationEmail, emailPw)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 734, in login
+    raise last_exception
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 723, in login
+    (code, resp) = self.auth(
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 646, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials y72sm6710054qkb.86 - gsmtp')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "c:\freeChamp\champNotif_v2\views.py", line 108, in processRegister
+    result = Email.sendVerificationEmail(email)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 78, in sendVerificationEmail
+    runSMTPAuthExceptionCode(server, e)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 232, in runSMTPAuthExceptionCode
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+TypeError: can only concatenate str (not "bytes") to str
+04/25/2020 07:57:48 PM 127.0.0.1 - - [25/Apr/2020 19:57:48] "[35m[1mPOST /processRegister HTTP/1.1[0m" 500 -
+04/25/2020 07:58:54 PM Exception on /processRegister [POST]
+Traceback (most recent call last):
+  File "c:\freeChamp\champNotif_v2\Email.py", line 76, in sendVerificationEmail
+    server.login(notificationEmail, emailPw)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 734, in login
+    raise last_exception
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 723, in login
+    (code, resp) = self.auth(
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 646, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials d63sm6787774qkb.52 - gsmtp')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "c:\freeChamp\champNotif_v2\views.py", line 108, in processRegister
+    result = Email.sendVerificationEmail(email)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 78, in sendVerificationEmail
+    runSMTPAuthExceptionCode(server, e)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 232, in runSMTPAuthExceptionCode
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+TypeError: can only concatenate str (not "bytes") to str
+04/25/2020 07:58:54 PM 127.0.0.1 - - [25/Apr/2020 19:58:54] "[35m[1mPOST /processRegister HTTP/1.1[0m" 500 -
+04/25/2020 08:00:39 PM Exception on /processRegister [POST]
+Traceback (most recent call last):
+  File "c:\freeChamp\champNotif_v2\Email.py", line 76, in sendVerificationEmail
+    server.login(notificationEmail, emailPw)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 734, in login
+    raise last_exception
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 723, in login
+    (code, resp) = self.auth(
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 646, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials y72sm6713794qkb.86 - gsmtp')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "c:\freeChamp\champNotif_v2\views.py", line 108, in processRegister
+    result = Email.sendVerificationEmail(email)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 78, in sendVerificationEmail
+    runSMTPAuthExceptionCode(server, e)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 232, in runSMTPAuthExceptionCode
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+TypeError: can only concatenate str (not "bytes") to str
+04/25/2020 08:00:39 PM 127.0.0.1 - - [25/Apr/2020 20:00:39] "[35m[1mPOST /processRegister HTTP/1.1[0m" 500 -
+04/25/2020 08:03:57 PM Exception on /processRegister [POST]
+Traceback (most recent call last):
+  File "c:\freeChamp\champNotif_v2\Email.py", line 76, in sendVerificationEmail
+    server.login(notificationEmail, emailPw)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 734, in login
+    raise last_exception
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 723, in login
+    (code, resp) = self.auth(
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 646, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials x5sm6882874qtm.81 - gsmtp')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "c:\freeChamp\champNotif_v2\views.py", line 108, in processRegister
+    result = Email.sendVerificationEmail(email)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 78, in sendVerificationEmail
+    runSMTPAuthExceptionCode(server, e)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 232, in runSMTPAuthExceptionCode
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+TypeError: can only concatenate str (not "bytes") to str
+04/25/2020 08:03:57 PM 127.0.0.1 - - [25/Apr/2020 20:03:57] "[35m[1mPOST /processRegister HTTP/1.1[0m" 500 -
+04/25/2020 08:04:36 PM Exception on /processRegister [POST]
+Traceback (most recent call last):
+  File "c:\freeChamp\champNotif_v2\Email.py", line 76, in sendVerificationEmail
+    server.login(notificationEmail, emailPw)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 734, in login
+    raise last_exception
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 723, in login
+    (code, resp) = self.auth(
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 646, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials v188sm6782575qkh.47 - gsmtp')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "c:\freeChamp\champNotif_v2\views.py", line 108, in processRegister
+    result = Email.sendVerificationEmail(email)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 78, in sendVerificationEmail
+    runSMTPAuthExceptionCode(server, e)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 232, in runSMTPAuthExceptionCode
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+TypeError: can only concatenate str (not "bytes") to str
+04/25/2020 08:04:36 PM 127.0.0.1 - - [25/Apr/2020 20:04:36] "[35m[1mPOST /processRegister HTTP/1.1[0m" 500 -
+04/25/2020 08:07:22 PM 127.0.0.1 - - [25/Apr/2020 20:07:22] "[31m[1mPOST /processRegister HTTP/1.1[0m" 401 -
+04/25/2020 08:07:50 PM Exception on /processRegister [POST]
+Traceback (most recent call last):
+  File "c:\freeChamp\champNotif_v2\Email.py", line 76, in sendVerificationEmail
+    server.login(notificationEmail, emailPw)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 734, in login
+    raise last_exception
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 723, in login
+    (code, resp) = self.auth(
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 646, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials y185sm5596636qkd.29 - gsmtp')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "c:\freeChamp\champNotif_v2\views.py", line 108, in processRegister
+    result = Email.sendVerificationEmail(email)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 78, in sendVerificationEmail
+    runSMTPAuthExceptionCode(server, e)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 232, in runSMTPAuthExceptionCode
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+TypeError: can only concatenate str (not "bytes") to str
+04/25/2020 08:07:50 PM 127.0.0.1 - - [25/Apr/2020 20:07:50] "[35m[1mPOST /processRegister HTTP/1.1[0m" 500 -
+04/25/2020 08:09:24 PM Exception on /processRegister [POST]
+Traceback (most recent call last):
+  File "c:\freeChamp\champNotif_v2\Email.py", line 76, in sendVerificationEmail
+    server.login(notificationEmail, emailPw)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 734, in login
+    raise last_exception
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 723, in login
+    (code, resp) = self.auth(
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 646, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials k127sm6709832qkb.35 - gsmtp')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "c:\freeChamp\champNotif_v2\views.py", line 108, in processRegister
+    result = Email.sendVerificationEmail(email)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 78, in sendVerificationEmail
+    runSMTPAuthExceptionCode(server, e)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 232, in runSMTPAuthExceptionCode
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+TypeError: can only concatenate str (not "bytes") to str
+04/25/2020 08:09:24 PM 127.0.0.1 - - [25/Apr/2020 20:09:24] "[35m[1mPOST /processRegister HTTP/1.1[0m" 500 -
+04/25/2020 08:15:04 PM 127.0.0.1 - - [25/Apr/2020 20:15:04] "[37mGET / HTTP/1.1[0m" 200 -
+04/25/2020 08:15:05 PM 127.0.0.1 - - [25/Apr/2020 20:15:05] "[37mGET /static/scripts/validate.js?_=1587860105126 HTTP/1.1[0m" 200 -
+04/25/2020 08:15:07 PM 127.0.0.1 - - [25/Apr/2020 20:15:07] "[37mGET /register HTTP/1.1[0m" 200 -
+04/25/2020 08:15:07 PM 127.0.0.1 - - [25/Apr/2020 20:15:07] "[37mGET /static/scripts/validate.js?_=1587860107351 HTTP/1.1[0m" 200 -
+04/25/2020 08:15:19 PM Exception on /processRegister [POST]
+Traceback (most recent call last):
+  File "c:\freeChamp\champNotif_v2\Email.py", line 76, in sendVerificationEmail
+    server.login(notificationEmail, emailPw)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 734, in login
+    raise last_exception
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 723, in login
+    (code, resp) = self.auth(
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\smtplib.py", line 646, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials a22sm6581704qko.81 - gsmtp')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "c:\freeChamp\champNotif_v2\views.py", line 108, in processRegister
+    result = Email.sendVerificationEmail(email)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 78, in sendVerificationEmail
+    runSMTPAuthExceptionCode(server, e)
+  File "c:\freeChamp\champNotif_v2\Email.py", line 232, in runSMTPAuthExceptionCode
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+TypeError: can only concatenate str (not "bytes") to str
+04/25/2020 08:15:19 PM 127.0.0.1 - - [25/Apr/2020 20:15:19] "[35m[1mPOST /processRegister HTTP/1.1[0m" 500 -
+04/25/2020 08:29:01 PM 127.0.0.1 - - [25/Apr/2020 20:29:01] "[35m[1mPOST /processRegister HTTP/1.1[0m" 500 -
+04/25/2020 08:29:01 PM Error on request:
+Traceback (most recent call last):
+  File "C:\freeChamp\champNotif_v2\Email.py", line 76, in sendVerificationEmail
+    server.login(notificationEmail, emailPw)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\smtplib.py", line 734, in login
+    raise last_exception
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\smtplib.py", line 723, in login
+    (code, resp) = self.auth(
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\smtplib.py", line 646, in auth
+    raise SMTPAuthenticationError(code, resp)
+smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials v2sm7310687qth.66 - gsmtp')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\werkzeug\serving.py", line 323, in run_wsgi
+    execute(self.server.app)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\werkzeug\serving.py", line 312, in execute
+    application_iter = app(environ, start_response)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\flask\app.py", line 2464, in __call__
+    return self.wsgi_app(environ, start_response)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\flask\app.py", line 2450, in wsgi_app
+    response = self.handle_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\flask\app.py", line 1867, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\flask\app.py", line 2447, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\flask\app.py", line 1952, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\flask\app.py", line 1821, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\flask\_compat.py", line 39, in reraise
+    raise value
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\flask\app.py", line 1950, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\Paul\AppData\Local\Programs\Python\Python38\Lib\site-packages\flask\app.py", line 1936, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "C:\freeChamp\champNotif_v2\views.py", line 108, in processRegister
+    result = Email.sendVerificationEmail(email)
+  File "C:\freeChamp\champNotif_v2\Email.py", line 78, in sendVerificationEmail
+    runSMTPAuthExceptionCode(server, e)
+  File "C:\freeChamp\champNotif_v2\Email.py", line 232, in runSMTPAuthExceptionCode
+    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+TypeError: can only concatenate str (not "bytes") to str

@@ -9,7 +9,7 @@ from .utility import genRandomString
 from .riotApi import *
 from .validate import *
 import logging
-import gResponse
+from .gResponse import isVerified
 from .forgotPassword import *
 
 @app.route('/')

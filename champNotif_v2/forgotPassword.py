@@ -1,5 +1,5 @@
 __author__ = 'Paul'
-from database import get_db, query_db
+from .database import get_db, query_db
 #log the time a password attempt took place
 def insertResetAttempt(email):
     db = get_db()
