@@ -9,8 +9,11 @@ from .utility import genRandomString
 from .riotApi import *
 from .validate import *
 import logging
-from .gResponse import isVerified
+from champNotif_v2 import gResponse
 from .forgotPassword import *
+import os
+
+app.secret_key = bytearray(str(os.urandom(16)), 'utf-8')
 
 @app.route('/')
 def index():
