@@ -67,7 +67,7 @@ def members():
     if 'logged_in' in session:
         (dragonVer,) = query_db("SELECT version from dragonVer", one=True)
         t = session['email']
-        lstChamps = query_db("""SELECT champs.champ, champs.key, champs.free,
+        lstChamps = query_db("""SELECT champs.champ, champs.key, champs.id, champs.free,
                                     case when notify.email is not null
                                         then 'true'
                                         else 'false'
@@ -171,7 +171,7 @@ def insertChamps():
         name = champ['name']
         key = champ['key']
         id = champ['id']
-        t = (name,key,int(id))
+        t = (name,key, id)
         g.db.execute("INSERT INTO CHAMPS (champ, key, id) VALUES (?, ?, ?)", t)
     g.db.commit()
     flash("success")
@@ -205,15 +205,15 @@ def checkForNewChamps():
             champData = dataDic[key]
             name = champData['name']
             logging.info('adding %s to the champs db', name)
-            id = champData['id']
-            freeData = getChampInfoById(id)
+            key = champData['key']
+            freeData = getChampInfoById(key)
             if freeData['freeToPlay'] == False:
                 isFree = 0
             else:
                 isFree = 1
 
-            t = (name, key, isFree, id)
-            g.db.execute("INSERT INTO CHAMPS VALUES (?, ?, ?, ?)", t)
+            t = (name, key, isFree)
+            g.db.execute("INSERT INTO CHAMPS VALUES (?, ?, ?)", t)
         g.db.commit()
         return "True"
     return "False"

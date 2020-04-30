@@ -4,17 +4,17 @@ import json, requests, time
 from .database import query_db, get_db
 from flask import g
 
-naEndpoint = "na.api.pvp.net"
-globalEndpoint = "global.api.pvp.net"
+naEndpoint = "na1.api.riotgames.com"
+ddragonCdn = "http://ddragon.leagueoflegends.com/cdn"
 api_key = app.config['API_KEY']
-staticDataVer = "v1.2"
-champVer = "v1.2"
-lolStaticData = "/api/lol/static-data/na/" + staticDataVer + "/champion?api_key=" + api_key
+dDragonVer = "10.8.1"
+champVer = "v3"
+champDataUrl = ddragonCdn + "/" + dDragonVer + "/data/en_US/champion.json"
 champion = "/api/lol/na/" + champVer + "/champion?api_key=" + api_key
 
 #has key
 def getDataDict():
-    url = "https://" + globalEndpoint + lolStaticData
+    url = champDataUrl
     r = requests.get(url)
     jObj = r.json()
     return jObj['data']
@@ -43,12 +43,12 @@ def getListOfChamps():
     champList = []
     objOfLists = getListOfChampDicts()
     for dict in objOfLists:
-        champList.append(getChampById(str(dict['id'])))
+        champList.append(getChampById(str(dict['key'])))
     return champList
 
 #get the latest image repo version in order to render the latest champ images
 def getDragonVer():
-    url = "https://" + globalEndpoint + "/api/lol/static-data/na/v1.2/versions?api_key=" + api_key
+    url = "https://ddragon.leagueoflegends.com/api/versions.json"
     response = requests.get(url)
     jObj = response.json()
     return jObj[0]
