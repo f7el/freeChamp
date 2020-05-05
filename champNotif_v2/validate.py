@@ -10,5 +10,5 @@ def emailIsValid(email):
     return re.match(pattern, email)
 
 def passwordIsValid(pw):
-    pattern = "^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$"
+    pattern = "^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,15}$"
     return re.match(pattern, pw)
