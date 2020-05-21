@@ -24,9 +24,9 @@ def getOptOutMessage(token, isHTML=False):
 
     return optOutMsg
 
-def addEmail( email, password, salt, isVerified):
-    t = (email, password, salt, isVerified)
-    g.db.execute('INSERT INTO USERS VALUES (?,?,?,?)', t)
+def addEmail( email, password, salt, isVerified, newPlayer):
+    t = (email, password, salt, isVerified, newPlayer)
+    g.db.execute('INSERT INTO USERS VALUES (?,?,?,?,?)', t)
     g.db.commit()
     #newId = cur.lastrowid
 

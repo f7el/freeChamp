@@ -105,7 +105,8 @@ def processRegister():
                 salt = genRandomString()
                 newPw = securePw(salt, pw)
                 isVerified = 0 #false
-                Email.addEmail(email, newPw, salt, isVerified)
+                newPlayer = request.form['varNewPlayer']
+                Email.addEmail(email, newPw, salt, isVerified, newPlayer)
                 token = genRandomString()
                 Email.addVerification(email,token)
                 result = Email.sendVerificationEmail(email)
@@ -206,7 +207,7 @@ def checkForNewChamps():
             name = champData['name']
             logging.info('adding %s to the champs db', name)
             key = champData['key']
-            freeData = getChampInfoById(key)
+            #freeData = getChampInfoById(key)
             if freeData['freeToPlay'] == False:
                 isFree = 0
             else:
@@ -239,6 +240,9 @@ def champUnselected():
             abort(400)
     abort(401)
 
+""" @app.route('updateNewPlayer', methods['POST'])
+def updateNewPlayer():
+    if 'logged_in' in session: """
 
 
 @app.route('/champSelected', methods=['POST'])

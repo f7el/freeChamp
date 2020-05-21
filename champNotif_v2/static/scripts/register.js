@@ -38,11 +38,17 @@ $(document).ready(function(){
                 error = true;
                 $("#pwMismatch").show();
             }
+            //if player is new
+            if ($("[type=checkbox]").prop("checked") == true){
+                var newPlayer = 1;
+            } else {
+                var newPlayer = 0;
+            }
             if (error == false) {
                 $.ajax({
                   type: "POST",
                   url: "/processRegister",
-                  data: { varEmail: email, varPassword: pw},
+                  data: { varEmail: email, varPassword: pw, varNewPlayer: newPlayer}, 
                   success: function(data, textStatus, jqXHR)
                   {
                       alert("email verification sent");
