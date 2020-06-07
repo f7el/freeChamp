@@ -165,15 +165,26 @@ def admin():
 @app.route('/insertChamps',methods=['GET'])
 def insertChamps():
     g.db = get_db()
-    dict = getDataDict()
-    keys = dict.keys()
-    for key in keys:
-        champ = dict[key]
-        name = champ['name']
-        key = champ['key']
-        id = champ['id']
-        t = (name,key, id)
-        g.db.execute("INSERT INTO CHAMPS (champ, key, id) VALUES (?, ?, ?)", t)
+    jObj = getFreeChampRotations()
+    newPlayerChampRotation = jObj['freeChampionIdsForNewPlayers']
+    champRotation = jObj['freeChampionIds']
+    champDicts = getDataDict()
+    for champ in champDicts:
+        champDict = champDicts[champ]
+        name = champDict['name']
+        key = champDict['key']
+        id = champDict['id']
+        free = 0
+        freeNew = 0
+        if (int(key) in newPlayerChampRotation):
+            freeNew = 1
+        if (int(key) in champRotation):
+            free = 1
+        t = (name,key, id, free, freeNew)
+       
+
+            
+        g.db.execute("INSERT INTO CHAMPS (champ, key, id, free, freeNew) VALUES (?, ?, ?, ?, ?)", t)
     g.db.commit()
     flash("success")
     return render_template('admin.html')
@@ -185,7 +196,8 @@ def checkForNewChamps():
     level=logging.INFO)
     dbKeys = [champ[0] for champ in query_db("select key from champs")]
     dataDic = getDataDict()
-
+ 
+    
     #get champ keys
     keys = dataDic.keys()
     #apiNames = []

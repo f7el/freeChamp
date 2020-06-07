@@ -5,7 +5,7 @@ from .database import query_db, get_db
 from flask import g
 from .champRotation import ChampRotation
 
-naEndpoint = "na1.api.riotgames.com"
+naEndpoint = "https://na1.api.riotgames.com"
 ddragonCdn = "http://ddragon.leagueoflegends.com/cdn"
 api_key = app.config['API_KEY']
 dDragonVer = "10.8.1"
@@ -24,12 +24,17 @@ def getDataDict():
 
 #gets a list of free champs; 
 #param: rotation enum: new player or standard rotation
-def getFreeChampRotation(rotationType): 
+""" def getFreeChampRotation(rotationType): 
     r = requests.get(champRotationUrl)
     jObj = r.json()
     if (rotationType == ChampRotation.NewPlayers):
         return jObj['freeChampionIdsForNewPlayers']
-    return jObj['freeChampionIds']
+    return jObj['freeChampionIds'] """
+
+def getFreeChampRotations(): 
+    headers = {'X-Riot-Token': api_key}
+    r = requests.get(champRotationUrl, headers=headers)
+    return r.json()
 
 #returns a dictionary with champ id as the key and champion name as the value
 def createChampLookupTable():
