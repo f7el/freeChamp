@@ -339,16 +339,20 @@ def freeChampPollTest():
  #determines if a free champ rotation has occured; if so, send an email to the appropriate users
 @app.route('/freeChampPoll')
 def freeChampPoll():
-    champs = getListOfChampDicts()
-    dbIds = [id[0] for id in query_db("SELECT id from CHAMPS WHERE free=1")]
-    apiIds = []
-    for champ in champs:
-        if champ['freeToPlay']:
-            apiIds.append(champ['id'])
-    newFreeChamps = list(set(apiIds) - set(dbIds))
-
-    if len(newFreeChamps) > 0:
-        Email.sendChampNotifEmail(apiIds)
+    dbFreeChampKeys = [key[0] for key in query_db("SELECT key from CHAMPS WHERE free=1")]
+    dbNewFreeChampKeys = [key[0] for key in query_db("SELECT key from CHAMPS WHERE freeNew=1")]
+    jObj = getFreeChampRotations()
+    newPlayerChampRotation = jObj['freeChampionIdsForNewPlayers']
+    champRotation = jObj['freeChampionIds']
+    champKeys = [key[0] for key in query_db("SELECT key from CHAMPS")]
+    diff = list(set(dbFreeChampKeys) - set(champRotation))
+    if len(diff) > 0:
+        query_db("UPDATE champs set free=0") 
+        for id in champRotation: 
+              db = get_db()
+              db.execute("UPDATE champs SET free=1 WHERE key=(?)", (id,))   
+              db.commit()
+        #Email.sendChampNotifEmail(apiIds)
 
     return "OK"
 
