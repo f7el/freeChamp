@@ -347,13 +347,23 @@ def freeChampPoll():
     champKeys = [key[0] for key in query_db("SELECT key from CHAMPS")]
     diff = list(set(dbFreeChampKeys) - set(champRotation))
     if len(diff) > 0:
-        query_db("UPDATE champs set free=0") 
+        g.db = get_db()
+        g.db.execute('UPDATE champs SET free=0')
+        g.db.commit() 
         for id in champRotation: 
-              db = get_db()
-              db.execute("UPDATE champs SET free=1 WHERE key=(?)", (id,))   
-              db.commit()
+            db = get_db()
+            db.execute("UPDATE champs SET free=1 WHERE key=(?)", (id,))   
+            db.commit()
         #Email.sendChampNotifEmail(apiIds)
-
+    diff = list(set(dbNewFreeChampKeys) - set(newPlayerChampRotation))
+    if len(diff) > 0:
+        g.db = get_db()
+        g.db.execute('UPDATE champs SET freeNew=0')
+        g.db.commit()
+        for id in newPlayerChampRotation:
+            db = get_db()
+            db.execute("UPDATE champs SET freeNew=1 WHERE key=(?)", (id,))   
+            db.commit()
     return "OK"
 
 @app.route('/optOut', methods=['GET'])
