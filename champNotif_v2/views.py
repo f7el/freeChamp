@@ -67,14 +67,27 @@ def members():
     if 'logged_in' in session:
         (dragonVer,) = query_db("SELECT version from dragonVer", one=True)
         t = session['email']
-        lstChamps = query_db("""SELECT champs.champ, champs.key, champs.id, champs.free,
-                                    case when notify.email is not null
-                                        then 'true'
-                                        else 'false'
-                                    end Selected
-                                FROM champs
-                                LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = (?)
-                                ORDER BY champs.champ;""", (t,))
+        #determine if player is new
+        result = query_db('SELECT isNewPlayer FROM users WHERE email=(?)', (t,), one=True)
+        isNew = result[0]
+        if isNew > 0:
+            lstChamps = query_db("""SELECT champs.champ, champs.key, champs.id, champs.freeNew,
+                                        case when notify.email is not null
+                                            then 'true'
+                                            else 'false'
+                                        end Selected
+                                    FROM champs
+                                    LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = (?)
+                                    ORDER BY champs.champ;""", (t,))
+        else:
+            lstChamps = query_db("""SELECT champs.champ, champs.key, champs.id, champs.free,
+                                        case when notify.email is not null
+                                            then 'true'
+                                            else 'false'
+                                        end Selected
+                                    FROM champs
+                                    LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = (?)
+                                    ORDER BY champs.champ;""", (t,))
 
 
         return render_template('members.html', lstChamps=lstChamps, postEmail=session['email'], dragonVer=dragonVer)
