@@ -83,16 +83,35 @@
             });
         }
     });
+   
+
+    $( "[type=checkbox]" ).click(function() {
+        //if the checkbox is checked(true), set newplayer col in users db to true
+        if ($("[type=checkbox]").prop("checked")) {
+            $.ajax({
+                type: "POST",
+                url: "/updateNewPlayer",
+                data: []
+            })
+        }
+    
+
+        });
     });
 </script>
-<div allOrNone style="margin:20px">
-      <input id="btnUnselectAll" type="button" name="btnUnselectAll" value="un-select all">
-      <br>
-      <input  id="btnSelectAll" type="button" name="btnSelectAll" value="select all">
-</div>
+
+    <div allOrNone style="margin:20px" class="btn-group" role="group">
+        <input id="btnUnselectAll" type="button" class="btn btn-default" name="btnUnselectAll" value="un-select all">
+        <input  id="btnSelectAll" type="button" class="btn btn-default" name="btnSelectAll" value="select all">
+          
+        <div class="row">
+            <input type="checkbox" name="newPlayer" value="true" aria-label="..." style="margin:16px">
+                Under level X
+        </div>
+    </div> 
+    
+
 <div class="panel panel-primary" style="margin:20px">
-
-
     <div class="panel-heading">
         <p>Champions</p>
     </div>
@@ -101,11 +120,15 @@
         {% for champInfo in lstChamps: %}
             {% if champInfo['free'] == 1 %}
                 <div class="champ free">
+            {% elif champInfo['freeNew'] == 1 %}
+                <div class="champ free">
              {% else %}
                 <div class="champ">
              {% endif %}
                     {% if champInfo['free'] == 1 %}
                     <span class="label label-success free">Free</span>
+                    {% elif champInfo['freeNew'] == 1 %}
+                    <span class="label label-success free">Free</span>cd 
                     {% endif %}
                     {% set cc = "" %}
 
