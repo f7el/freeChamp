@@ -83,20 +83,7 @@
             });
         }
     });
-   
 
-    $( "[type=checkbox]" ).click(function() {
-        //if the checkbox is checked(true), set newplayer col in users db to true
-        if ($("[type=checkbox]").prop("checked")) {
-            $.ajax({
-                type: "POST",
-                url: "/updateNewPlayer",
-                data: []
-            })
-        }
-    
-
-        });
     });
 </script>
 
@@ -104,10 +91,15 @@
         <input id="btnUnselectAll" type="button" class="btn btn-default" name="btnUnselectAll" value="un-select all">
         <input  id="btnSelectAll" type="button" class="btn btn-default" name="btnSelectAll" value="select all">
           
-        <div class="row">
-            <input type="checkbox" name="newPlayer" value="true" aria-label="..." style="margin:16px">
-                Under level X
-        </div>
+        <div class="row" style="padding-top:50px; margin:0px">
+            <form action="/updateRotation" method="POST" target="_self">   
+                <input type="hidden" name="email" value={{postEmail}}>
+                <button type="submit" class="btn btn-default">
+                    Take me out of the new player rotation  
+                </button>
+            </form>
+        </div>     
+        
     </div> 
     
 
@@ -117,43 +109,37 @@
     </div>
     <div class="panel-body">
         <div id="champ_box">
+        
         {% for champInfo in lstChamps: %}
             {% if champInfo['free'] == 1 %}
                 <div class="champ free">
             {% elif champInfo['freeNew'] == 1 %}
                 <div class="champ free">
-             {% else %}
+            {% else %}
                 <div class="champ">
-             {% endif %}
-                    {% if champInfo['free'] == 1 %}
-                    <span class="label label-success free">Free</span>
-                    {% elif champInfo['freeNew'] == 1 %}
-                    <span class="label label-success free">Free</span>cd 
-                    {% endif %}
-                    {% set cc = "" %}
+            {% endif %}
 
-                    {% if champInfo['Selected'] == 'true' %}
-                        <img class="check" src="http://i.imgur.com/fA6Z6.png" />
-                        {% set cc = cc + "check_champ" %}
-                    {% else %}
-                        <img class="check nocheck" src="http://i.imgur.com/fA6Z6.png" />
-                    {% endif %}
+            {% if champInfo['free'] == 1 %}
+            <span class="label label-success free">Free</span>
+            {% elif champInfo['freeNew'] == 1 %}
+            <span class="label label-success free">Free</span>
+            {% endif %}
+            {% set cc = "" %}
 
-                    {% if champInfo['free'] == 1 %}
-                       {% set cc = cc + " free" %}
-                     {% endif %}
+            {% if champInfo['Selected'] == 'true' %}
+                <img class="check" src="http://i.imgur.com/fA6Z6.png" />
+                {% set cc = cc + "check_champ" %}
+            {% else %}
+                <img class="check nocheck" src="http://i.imgur.com/fA6Z6.png" />
+            {% endif %}
 
-
-                    <img class="{{ cc }} champ_thumbnail" src="http://ddragon.leagueoflegends.com/cdn/{{ dragonVer }}/img/champion/{{ champInfo['id'] }}.png" />
-
-                    <p>{{ champInfo['champ'] }}</p>
+            {% if champInfo['free'] == 1 %}
+                {% set cc = cc + " free" %}
+                {% endif %}
+                <img class="{{ cc }} champ_thumbnail" src="http://ddragon.leagueoflegends.com/cdn/{{ dragonVer }}/img/champion/{{ champInfo['id'] }}.png" />
+                <p>{{ champInfo['champ'] }}</p>
                 </div>
-
-            {% endfor %}
+        {% endfor %}
        </div>
     </div>
-
-
-
-
 {% endblock %}
