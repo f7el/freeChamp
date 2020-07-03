@@ -71,6 +71,7 @@ def members():
         result = query_db('SELECT isNewPlayer FROM users WHERE email=(?)', (t,), one=True)
         isNew = result[0]
         if isNew > 0:
+            isNew=True
             lstChamps = query_db("""SELECT champs.champ, champs.key, champs.id, champs.freeNew,
                                         case when notify.email is not null
                                             then 'true'
@@ -80,6 +81,7 @@ def members():
                                     LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = (?)
                                     ORDER BY champs.champ;""", (t,))
         else:
+            isNew=False
             lstChamps = query_db("""SELECT champs.champ, champs.key, champs.id, champs.free,
                                         case when notify.email is not null
                                             then 'true'
@@ -88,8 +90,6 @@ def members():
                                     FROM champs
                                     LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = (?)
                                     ORDER BY champs.champ;""", (t,))
-
-
         return render_template('members.html', lstChamps=lstChamps, postEmail=session['email'], dragonVer=dragonVer)
     else:
         return render_template('401.html')
@@ -480,3 +480,19 @@ def updateDragon():
 def about():
     return render_template('about.html')
 
+@app.route('/updateRotation', methods=['POST'])
+def updateRotation():
+    email = request.form['email']
+    (dragonVer,) = query_db("SELECT version from dragonVer", one=True)
+    t = (email,)
+    g.db.execute('UPDATE users SET isNewPlayer=0 WHERE email=(?)', t)
+    g.db.commit()
+    lstChamps = query_db("""SELECT champs.champ, champs.key, champs.id, champs.free,
+                                        case when notify.email is not null
+                                            then 'true'
+                                            else 'false'
+                                        end Selected
+                                    FROM champs
+                                    LEFT JOIN notify ON champs.champ = notify.champ AND notify.email = (?)
+                                    ORDER BY champs.champ;""", t)
+    return render_template('members.html', lstChamps=lstChamps, postEmail=email, dragonVer=dragonVer)
