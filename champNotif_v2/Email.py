@@ -9,6 +9,7 @@ from champNotif_v2.info import *
 from logging import FileHandler
 from logging import Formatter
 import logging
+from champNotif_v2.champRotation import ChampRotation
 
 
 from email.mime.multipart import MIMEMultipart
@@ -140,28 +141,43 @@ def sendEmail(toEmail, subject, body, html):
     finally:
         server.quit()
 
-def sendChampNotifEmail(apiIds):
+#send an email to users notifying them of free champs
+#param: champion rotation (standard or new)
+def sendChampNotifEmail(rotation):
     logging.basicConfig(filename='freeChampEvents.log',format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',
 level=logging.INFO)
     subject = "Free Champion Notification"
-    g.db = get_db()
-    #reset free bool
-    g.db.execute("UPDATE CHAMPS SET free = 0")
-    #for each champ id in the api call, show that champ as free in the db
-    for champId in apiIds:
-         g.db.execute("UPDATE Champs SET free = 1 WHERE id = (?)", (champId,))
-    g.db.commit()
+    # g.db = get_db()
+    # #reset free bool
+    # g.db.execute("UPDATE CHAMPS SET free = 0")
+    # #for each champ id in the api call, show that champ as free in the db
+    # for champId in apiIds:
+    #      g.db.execute("UPDATE Champs SET free = 1 WHERE id = (?)", (champId,))
+    # g.db.commit()
     #get a list of users that have selected champs they want to be notified when they are free
-    emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
+
+    #determine if the email is for the new player rotation or the standard rotation
+    if (rotation == ChampRotation.NewPlayers):
+        emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.freeNew = 1")]
+    else:
+        emails = [email[0] for email in query_db("SELECT Distinct Notify.Email FROM Notify JOIN Champs ON Champs.Champ = Notify.Champ WHERE Champs.Free = 1")]
+    
     emailNum = len(emails)
     logging.info("sending " + str(emailNum) + " notification email(s)")
     print("updating free champ rotation. \n" + str(len(emails)) + " emails in this update")
     for email in emails:
-        freeChampsSelectedByUser = [champ[0] for champ in query_db("""
-            SELECT champs.champ
-            FROM CHAMPS
-            JOIN notify ON champs.champ = notify.champ
-            where notify.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
+        if (rotation == ChampRotation.NewPlayers):
+            freeChampsSelectedByUser = [champ[0] for champ in query_db("""
+                SELECT champs.champ
+                FROM CHAMPS
+                JOIN notify ON champs.champ = notify.champ
+                where notify.email=(?) and champs.freeNew = 1 order by champs.champ""", (email,))]
+        else:
+            freeChampsSelectedByUser = [champ[0] for champ in query_db("""
+                SELECT champs.champ
+                FROM CHAMPS
+                JOIN notify ON champs.champ = notify.champ
+                where notify.email=(?) and champs.free = 1 order by champs.champ""", (email,))]
 
         msg = "Hello from Free Champ! You wished to be notified when the below champs are free: \n"
 
@@ -229,5 +245,5 @@ def checkSendLimit(email):
 def runSMTPAuthExceptionCode(server, e):
     logging.basicConfig(filename='freeChampError.log',format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p',
     level=logging.ERROR)
-    logging.error("smtp error" + str(e.smtp_code) + ": " + e.smtp_error)
+    logging.error("smtp error" + str(e.smtp_code) + ": " + str(e.smtp_error))
     server.quit()
